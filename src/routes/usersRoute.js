@@ -3,12 +3,8 @@ import { usersByUserName, retrievePosts } from '../controllers/usersControllers.
 
 const usersRoute = Router();
 
-usersRoute
-    .route('/username/:username')
-    .get(usersByUserName);
+usersRoute.route('/username/:username').get(usersByUserName);
 
-usersRoute
-    .route('/:userId/posts')
-    .get(retrievePosts);
+usersRoute.route('/:userId/posts').get(retrievePosts);
 
 export default usersRoute;
