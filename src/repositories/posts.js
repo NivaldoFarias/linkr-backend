@@ -2,7 +2,6 @@ import db from '../database/index.js';
 
 async function getPostsByHashtagId(hashtagId) {
 
-    console.log('> getPostsByHashtagId !!');
 
     const query = `
         SELECT p.*, u.username, u.image_url FROM posts p
@@ -12,7 +11,6 @@ async function getPostsByHashtagId(hashtagId) {
         ORDER BY p.created_at DESC;
     `
     const response = await db.query(query, [hashtagId]);
-    console.log(response);
     return response.rows;
 }
 
@@ -26,7 +24,6 @@ async function getPostsByUserId(userId) {
         ORDER BY p.created_at DESC;
     `
     const response = await db.query(query, [userId]);
-    console.log(response);
     return response.rows;
 }
 
