@@ -1,10 +1,14 @@
 import { Router } from 'express';
-import { usersByUserName } from '../controllers/usersControllers.js';
+import { usersByUserName, retrievePosts } from '../controllers/usersControllers.js';
 
 const usersRoute = Router();
 
 usersRoute
     .route('/username/:username')
     .get(usersByUserName);
+
+usersRoute
+    .route('/:userId/posts')
+    .get(retrievePosts);
 
 export default usersRoute;
