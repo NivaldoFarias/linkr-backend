@@ -1,16 +1,13 @@
 import { stripHtml } from 'string-strip-html';
 import SqlString from 'sqlstring';
 import urlExist from 'url-exist';
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import dotenv from 'dotenv';
 import chalk from 'chalk';
-dotenv.config();
 
 import CustomError from '../util/CustomError.js';
-import { MIDDLEWARE } from './../blueprints/chalk.js';
-import { SignInSchema, SignUpSchema } from './../models/authModel.js';
-import db from './../database/index.js';
+import { MIDDLEWARE } from '../blueprints/chalk.js';
+import { SignInSchema, SignUpSchema } from '../models/authModel.js';
+import db from '../database/index.js';
 
 async function validateSignUp(req, res, next) {
   const { password, imageUrl } = req.body;
@@ -64,9 +61,9 @@ async function validateSignIn(req, res, next) {
 }
 
 async function usernameIsUnique(_req, res, next) {
-  const { usermane } = res.locals;
+  const { username } = res.locals;
 
-  const query = SqlString.format(`SELECT * FROM users WHERE usermane = ?`, [usermane]);
+  const query = SqlString.format(`SELECT * FROM users WHERE username = ?`, [username]);
   const result = await db.query(query);
   const user = result.rows[0] ?? null;
 
@@ -74,7 +71,7 @@ async function usernameIsUnique(_req, res, next) {
     throw new CustomError(
       409,
       `Username already registered`,
-      'Ensure to provide an usermane that is not already registered',
+      'Ensure to provide an username that is not already registered',
     );
   }
 
@@ -107,11 +104,7 @@ async function validatePassword(req, res, next) {
   const { user } = res.locals;
 
   if (!bcrypt.compareSync(password, user.password)) {
-    throw new CustomError(
-      401,
-      `Invalid password`,
-      'Ensure to provide a valid password corresponding to the provided email',
-    );
+    throw new CustomError(401, `Invalid password`, 'Ensure to provide a valid password');
   }
 
   console.log(chalk.magenta(`${MIDDLEWARE} Valid password`));

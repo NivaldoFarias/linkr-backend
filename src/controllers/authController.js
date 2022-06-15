@@ -1,3 +1,4 @@
+import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import chalk from 'chalk';
@@ -12,8 +13,8 @@ async function signUp(_req, res) {
   const cryptPass = bcrypt.hashSync(password, 10);
   const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-  await authRepository.signUp(username, email, cryptPass, imageUrl, createdAt);
-  console.log(chalk.blue(`${API} ${username} registered successfully`));
+  await authRepository.signUp(email, cryptPass, username, imageUrl, createdAt);
+  console.log(chalk.blue(`${API} User ${username} registered successfully`));
   return res.sendStatus(201);
 }
 
@@ -27,7 +28,7 @@ async function signIn(_req, res) {
   const config = { expiresIn, subject: id.toString() };
   const token = jwt.sign(data, secretKey, config);
 
-  console.log(chalk.blue(`${API} ${username} signed in successfully`));
+  console.log(chalk.blue(`${API} User ${username} signed in successfully`));
   return res.status(200).send({ token });
 }
 
