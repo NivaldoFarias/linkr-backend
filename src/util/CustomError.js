@@ -1,6 +1,6 @@
 import 'http';
 
-export class CustomError {
+class CustomError {
   statusCode;
   message;
   details;
@@ -11,3 +11,5 @@ export class CustomError {
     this.details = details;
   }
 }
+
+export default CustomError;
