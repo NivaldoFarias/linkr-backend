@@ -2,7 +2,6 @@ import { userRepository } from "../repositories/users.js";
 
 export const usersByUserName = async (req, res, next) => {
     try {
-        console.log('> check users by username');
         const { username } = req.params;
         const users = await userRepository.getUsersByUserName(username);
         res.status(200).json({ users });
@@ -11,10 +10,10 @@ export const usersByUserName = async (req, res, next) => {
     }
 };
 
-export const retrievePosts = async (req,res,next) => {
+export const retrievePosts = async (req, res, next) => {
     try {
-        const { userId:id } = req.params;
-        const posts = await getPostsByUserId(id);
+        const { userId: id } = req.params;
+        const posts = await userRepository.getPostsByUserId(id);
         res.status(200).json({ posts });
     } catch (e) {
         next(e);

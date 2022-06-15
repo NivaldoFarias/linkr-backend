@@ -22,7 +22,6 @@ async function getTrendingHashtags(hashtag) {
         ORDER BY likes_count DESC, posts_count DESC
         LIMIT 10;
     `;
-    console.log(query);
     const response = await db.query(query);
     return response.rows;
 }
