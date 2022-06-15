@@ -7,8 +7,11 @@ const getUsersByUserName = async (username) => {
         WHERE LOWER(users.username) LIKE $1
         ORDER BY users.username ASC;
     `;
-    const result = await db.query(searchQuery,[`${username.toLowerCase()}%`]);
+    const result = await db.query(searchQuery, [`${username.toLowerCase()}%`]);
     return result.rows;
 }
 
-export default getUsersByUserName;
+
+export const userRepository = {
+    getUsersByUserName
+}
