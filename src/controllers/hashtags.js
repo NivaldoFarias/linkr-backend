@@ -1,4 +1,5 @@
 import { hashtagRepository } from "../repositories/hashtags.js";
+import { postsRepository } from "../repositories/posts.js";
 import CustomError from "../util/CustomError.js";
 
 export async function getTrendingHashtags(req, res) {
@@ -17,11 +18,8 @@ export async function getHashtagPosts(req, res) {
     try {
         const { hashtagId } = res.locals;
         console.log('> hashtagId: ', hashtagId);
-        const posts = await hashtagRepository.getHashtagPostsByHashtagId(hashtagId);
+        const posts = await postsRepository.getPostsByHashtagId(hashtagId);
         console.log('> posts: ', posts);
-
-        // add users, hashtags and likes
-
         res.send(posts);
     } catch (e) {
         res.status(500).send({ error: e })

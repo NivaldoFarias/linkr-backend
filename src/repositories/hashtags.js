@@ -8,17 +8,6 @@ async function getHashtagIdByName(hashtag) {
     return response.rows[0].id;
 }
 
-async function getHashtagPostsByHashtagId(hashtagId) {
-    const query = `
-        SELECT p.* FROM posts p
-        JOIN hashtags_posts hp ON p.id = hp.post_id
-        WHERE hp.hashtag_id = $1;
-    `
-    const response = await db.query(query, [hashtagId]);
-    console.log(response);
-    return response.rows;
-}
-
 async function getTrendingHashtags(hashtag) {
     const query = `
         SELECT 
@@ -40,6 +29,5 @@ async function getTrendingHashtags(hashtag) {
 
 export const hashtagRepository = {
     getHashtagIdByName,
-    getHashtagPostsByHashtagId,
     getTrendingHashtags
 }
