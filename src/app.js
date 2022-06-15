@@ -1,8 +1,9 @@
-import express from "express";
-import helmet from "helmet";
-import cors from "cors";
-import routes from "./routes/index.js"
-import ErrorHandler from "./middlewares/ErrorHandler.js";
+import express from 'express';
+import 'express-async-errors';
+import helmet from 'helmet';
+import cors from 'cors';
+import routes from './routes/index.js';
+import ErrorHandler from './middlewares/ErrorHandler.js';
 
 const app = express();
 
@@ -13,5 +14,3 @@ app.use(express.urlencoded({ extended: false }));
 app.use(routes);
 app.use(ErrorHandler);
 export default app;
-
-
