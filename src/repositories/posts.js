@@ -54,4 +54,5 @@ export const postsRepository = {
   getPostsByHashtagId,
   getPostsByUserId,
   insertPost,
+  getTimelinePosts
 };
