@@ -1,4 +1,4 @@
-import 'http';
+import http from 'http';
 
 class CustomError extends Error {
   constructor(statusCode, message, details = {}) {
