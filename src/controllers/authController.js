@@ -22,7 +22,7 @@ async function signIn(_req, res) {
   const {
     user: { id, username },
   } = res.locals;
-  const data = {};
+  const data = { userId: id };
   const secretKey = process.env.JWT_SECRET ?? 'JWT_SECRET';
   const expiresIn = process.env.JWT_EXPIRES_IN ?? '1d';
   const config = { expiresIn, subject: id.toString() };

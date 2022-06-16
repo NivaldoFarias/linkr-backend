@@ -24,14 +24,15 @@ async function getPostsByUserId(userId) {
   return response.rows;
 }
 
-async function insertPost(text, url, user_id) {
-  return db.query(
-    `
-        INSERT INTO posts (text, url, user_id)
-        VALUES ($1, $2, $3)
-    `,
-    [text, url, user_id],
-  );
+async function insertPost(text, urlId, userId) {
+
+  const query = `
+    INSERT INTO posts (text, url_id, user_id)
+    VALUES ($1, $2, $3)
+    RETURNING *
+  `;
+  const response = await db.query(query, [text, urlId, userId]);
+  return response.rows[0];
 }
 
 export const postsRepository = {

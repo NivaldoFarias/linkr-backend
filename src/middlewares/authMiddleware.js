@@ -14,9 +14,9 @@ async function validateSignUp(req, res, next) {
     const { password, imageUrl } = req.body;
     const username = stripHtml(req.body.username).result.trim();
     const email = stripHtml(req.body.email).result.trim();
-  
+
     const urlExists = await urlExist(imageUrl);
-  
+
     const validate = SignUpSchema.validate(
       {
         username,
@@ -48,9 +48,9 @@ async function validateSignIn(req, res, next) {
   try {
     const password = req.body.password;
     const username = stripHtml(req.body.username).result.trim();
-  
+
     const validate = SignInSchema.validate({ username, password }, { abortEarly: false });
-  
+
     if (validate.error) {
       throw new CustomError(
         422,
@@ -58,7 +58,7 @@ async function validateSignIn(req, res, next) {
         validate.error.details.map((e) => e.message).join(', '),
       );
     }
-  
+
     res.locals.username = username;
     res.locals.password = password;
     console.log(chalk.magenta(`${MIDDLEWARE} Valid sign in input`));
@@ -71,11 +71,11 @@ async function validateSignIn(req, res, next) {
 async function usernameIsUnique(_req, res, next) {
   try {
     const { username } = res.locals;
-  
+
     const query = SqlString.format(`SELECT * FROM users WHERE username = ?`, [username]);
     const result = await db.query(query);
     const user = result.rows[0] ?? null;
-  
+
     if (user) {
       throw new CustomError(
         409,
@@ -83,7 +83,7 @@ async function usernameIsUnique(_req, res, next) {
         'Ensure to provide an username that is not already registered',
       );
     }
-  
+
     console.log(chalk.magenta(`${MIDDLEWARE} Username is unique`));
     next();
   } catch (e) {
@@ -94,11 +94,11 @@ async function usernameIsUnique(_req, res, next) {
 async function findUser(req, res, next) {
   try {
     const username = stripHtml(req.body.username).result.trim();
-  
+
     const query = SqlString.format(`SELECT * FROM users WHERE username = ?`, [username]);
     const result = await db.query(query);
     const user = result.rows[0] ?? null;
-  
+
     if (!user) {
       throw new CustomError(
         404,
@@ -106,7 +106,31 @@ async function findUser(req, res, next) {
         'Ensure to provide a valid username corresponding to a registered user',
       );
     }
-  
+
+    res.locals.user = user;
+    console.log(chalk.magenta(`${MIDDLEWARE} User found`));
+    next();
+  } catch (e) {
+    next(e);
+  }
+}
+
+async function validateUserId(req, res, next) {
+  try {
+    const { userId } = res.locals;
+
+    const query = SqlString.format(`SELECT * FROM users WHERE id = ?`, [userId]);
+    const result = await db.query(query);
+    const user = result.rows[0] ?? null;
+
+    if (!user) {
+      throw new CustomError(
+        404,
+        'User not found',
+        'Ensure to provide a valid username corresponding to a registered user',
+      );
+    }
+
     res.locals.user = user;
     console.log(chalk.magenta(`${MIDDLEWARE} User found`));
     next();
@@ -119,11 +143,11 @@ async function validatePassword(req, res, next) {
   try {
     const password = req.body.password;
     const { user } = res.locals;
-  
+
     if (!bcrypt.compareSync(password, user.password)) {
       throw new CustomError(401, `Invalid password`, 'Ensure to provide a valid password');
     }
-  
+
     console.log(chalk.magenta(`${MIDDLEWARE} Valid password`));
     next();
   } catch (e) {
@@ -131,4 +155,4 @@ async function validatePassword(req, res, next) {
   }
 }
 
-export { validateSignUp, validateSignIn, usernameIsUnique, findUser, validatePassword };
+export { validateSignUp, validateSignIn, usernameIsUnique, findUser, validatePassword, validateUserId };

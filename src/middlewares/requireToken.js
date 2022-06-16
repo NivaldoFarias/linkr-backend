@@ -9,8 +9,9 @@ async function requireToken(req, res, next) {
     const authorization = req.header('authorization') ?? '';
     const token = authorization.replace('Bearer ', '').trim() ?? null;
     const secretKey = process.env.JWT_SECRET ?? 'JWT_SECRET';
-    const { sub } = jwt.verify(token, secretKey);
+    const { sub, userId } = jwt.verify(token, secretKey);
     res.locals.subject = sub;
+    res.locals.userId = userId;
     console.log(chalk.bold.magenta(`${MIDDLEWARE} Valid token`));
     return next();
   } catch (_error) {
