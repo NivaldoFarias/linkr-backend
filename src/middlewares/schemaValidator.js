@@ -1,9 +1,13 @@
 export function validateSchema(schema) {
-    return (req, res, next) =>{
-        const {error} = schema.validate(req.body, {abortEarly: false});
-        if (error) {
-            return res.status(422).send(error.details.map(detail=>detail.message));
-        }
-        next();
+  return (req, _res, next) => {
+    try {
+      const { error } = schema.validate(req.body, { abortEarly: false });
+      if (error) {
+        throw new CustomError(422, 'Alguma mensagem', error.details.map((detail) => detail.message));
+      }
+      next();
+    } catch (e) {
+      next(e);
     }
+  };
 }
