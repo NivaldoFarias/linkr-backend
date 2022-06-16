@@ -1,12 +1,9 @@
-class CustomError {
-  statusCode;
-  message;
-  details;
+class CustomError extends Error {
   constructor(statusCode, message, details = {}) {
+    super(message);
     this.statusCode = statusCode;
-    this.message = message;
     this.details = details;
   }
-}
+};
 
 export default CustomError;
