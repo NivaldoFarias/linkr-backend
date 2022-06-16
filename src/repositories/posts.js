@@ -24,6 +24,22 @@ async function getPostsByUserId(userId) {
   return response.rows;
 }
 
+async function getTimelinePosts(){
+  const query = `
+  SELECT
+    p.id, p.text, 
+    ur.url, ur.image_url as "urlPicture", ur.title as "urlTitle", ur.description as "urlDescription",
+    us.id as "userId", us.image_url as "userPictureUrl", us.username
+  FROM posts p
+  JOIN urls ur on p.url_id = ur.id
+  JOIN users us on p.user_id = us.id
+  ORDER BY p.created_at DESC
+  LIMIT 20;
+  `;
+  const response = await db.query(query);
+  return response.rows;
+}
+
 async function insertPost(text, url, user_id) {
   return db.query(
     `
