@@ -11,6 +11,17 @@ const getUsersByUserName = async (username) => {
   return result.rows;
 };
 
+const getUserById = async (id) => {
+  const searchQuery = `
+      SELECT users.username, users.image_url as "imageUrl"
+      FROM users
+      WHERE users.id = $1;
+    `;
+  const result = await db.query(searchQuery, [id]);
+  return result.rows[0];
+};
+
 export const userRepository = {
   getUsersByUserName,
+  getUserById,
 };
