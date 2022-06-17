@@ -10,6 +10,6 @@ routes.use('/hashtags', hashtagsRoute);
 routes.use('/users', usersRoute);
 routes.use('/auth', authRouter);
 routes.use('/posts', postRouter);
-routes.use('/timeline', timelineRouter)
+routes.use('/timeline', timelineRouter);
 
 export default routes;

@@ -26,7 +26,41 @@ async function getTrendingHashtags(hashtag) {
   return response.rows;
 }
 
+export async function findHashtag(hashtag) {
+  const query = `
+        SELECT * FROM hashtags WHERE "name" = $1;
+    `;
+  const response = await db.query(query, [hashtag]);
+  return response.rows[0];
+}
+
+export async function createHashtag(hashtag) {
+  const query = `
+        INSERT INTO hashtags ("name") VALUES ($1) RETURNING *;`
+  const response = await db.query(query, [hashtag]);
+  return response.rows[0];
+}
+
+export async function findHashtagPost(hashtagId, postId) {
+  const query = `
+        SELECT * FROM hashtags_posts WHERE hashtag_id = $1 AND post_id = $2;
+    `;
+  const response = await db.query(query, [hashtagId, postId]);
+  return response.rows[0];
+}
+
+export async function createHashtagPost(hashtagId, postId) {
+  const query = `
+        INSERT INTO hashtags_posts (hashtag_id, post_id) VALUES ($1, $2) RETURNING *;`
+  const response = await db.query(query, [hashtagId, postId]);
+  return response.rows[0];
+}
+
 export const hashtagRepository = {
   getHashtagIdByName,
   getTrendingHashtags,
+  findHashtag,
+  createHashtag,
+  findHashtagPost,
+  createHashtagPost
 };

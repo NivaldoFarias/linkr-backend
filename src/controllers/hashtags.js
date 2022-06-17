@@ -2,6 +2,7 @@ import { hashtagRepository } from '../repositories/hashtags.js';
 import { postsRepository } from '../repositories/posts.js';
 import CustomError from '../util/CustomError.js';
 
+
 export async function getTrendingHashtags(req, res) {
   try {
     const trending = await hashtagRepository.getTrendingHashtags();
