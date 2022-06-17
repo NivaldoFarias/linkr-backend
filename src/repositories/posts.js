@@ -61,9 +61,40 @@ async function insertPost(text, urlId, userId) {
   return response.rows[0];
 }
 
+async function findPostById(postId) {
+  const query = `SELECT * FROM posts WHERE id = $1`
+  const response = await db.query(query, [postId]);
+  return response.rows[0];
+}
+
+async function userIdHasLikedPost(userId, postId) {
+  const query = `SELECT * FROM likes WHERE user_id = $1 AND post_id = $2`
+  const response = await db.query(query, [userId, postId]);
+  const hasLiked = (response.rows.length > 0) ?? false;
+  return (hasLiked);
+}
+
+async function likePost(userId, postId) {
+  const query = `INSERT INTO likes (user_id, post_id) VALUES ($1, $2)`
+  console.log(query, [userId, postId]);
+  const response = await db.query(query, [userId, postId]);
+  return response.rows[0];
+}
+
+async function unlikePost(userId, postId) {
+  const query = `DELETE FROM likes WHERE user_id = $1 AND post_id = $2`
+  const response = await db.query(query, [userId, postId]);
+  return response.rows[0];
+}
+
+
 export const postsRepository = {
   getPostsByHashtagId,
   getPostsByUserId,
   insertPost,
-  getTimelinePosts
+  getTimelinePosts,
+  findPostById,
+  userIdHasLikedPost,
+  likePost,
+  unlikePost
 };
