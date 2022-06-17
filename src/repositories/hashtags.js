@@ -2,10 +2,10 @@ import db from '../database/index.js';
 
 async function getHashtagIdByName(hashtag) {
   const query = `
-        SELECT * FROM hashtags WHERE "name" = $1;
+        SELECT * FROM hashtags WHERE name = $1;
     `;
   const response = await db.query(query, [hashtag]);
-  return response.rows[0].id;
+  return response.rows[0];
 }
 
 async function getTrendingHashtags(hashtag) {
@@ -15,9 +15,9 @@ async function getTrendingHashtags(hashtag) {
             COUNT(l.id) AS likes_count,
             COUNT(p.id) AS posts_count
         FROM hashtags h 
-        JOIN hashtags_posts hp ON h.id = hp.hashtag_id
-        JOIN posts p ON hp.post_id = p.id
-        JOIN likes l ON p.id = l.post_id
+        LEFT JOIN hashtags_posts hp ON h.id = hp.hashtag_id
+        LEFT JOIN posts p ON hp.post_id = p.id
+        LEFT JOIN likes l ON p.id = l.post_id
         GROUP BY h.id
         ORDER BY likes_count DESC, posts_count DESC
         LIMIT 10;

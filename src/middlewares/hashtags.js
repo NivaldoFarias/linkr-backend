@@ -7,11 +7,14 @@ export async function validateHashtag(req, res, next) {
     if (!hashtag) {
       throw new CustomError(400, 'Invalid hashtag');
     }
-    const hashtagId = await hashtagRepository.getHashtagIdByName(hashtag);
+    const hashtagObj = await hashtagRepository.getHashtagIdByName(hashtag);
+    const hashtagId = hashtagObj.id;
+
     if (!hashtagId) {
       throw new CustomError(404, 'Hashtag not found');
     }
-    res.locals = { hashtagId };
+    res.locals.hashtagId = hashtagId;
+    console.log('[MIDDLEWARE] hashtagId: ', hashtagId);
     next();
   } catch (e) {
     next(e);

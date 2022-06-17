@@ -16,6 +16,7 @@ export async function getHashtagPosts(req, res) {
   try {
     const { hashtagId } = res.locals;
     const posts = await postsRepository.getPostsByHashtagId(hashtagId);
+    console.log(`[CONTROLLER] ${posts.length} posts`);
     res.send(posts);
   } catch (e) {
     res.status(500).send({ error: e });
