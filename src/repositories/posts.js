@@ -2,11 +2,16 @@ import db from '../database/index.js';
 
 async function getPostsByHashtagId(hashtagId) {
   const query = `
-    SELECT p.*, u.username, u.image_url FROM posts p
-    JOIN users u ON p.user_id = u.id
-    JOIN hashtags_posts hp ON p.id = hp.post_id
-    WHERE hp.hashtag_id = $1
-    ORDER BY p.created_at DESC;
+      SELECT
+        p.id, p.text, 
+        ur.url, ur.image_url as "urlPicture", ur.title as "urlTitle", ur.description as "urlDescription",
+        us.id as "userId", us.image_url as "userPictureUrl", us.username
+      FROM users us
+      JOIN posts p ON p.user_id = us.id
+      JOIN urls ur on p.url_id = ur.id
+      JOIN hashtags_posts hp on hp.post_id = p.id
+      WHERE hp.hashtag_id = $1
+      ORDER BY p.created_at DESC;
     `;
   const response = await db.query(query, [hashtagId]);
   return response.rows;
@@ -14,11 +19,15 @@ async function getPostsByHashtagId(hashtagId) {
 
 async function getPostsByUserId(userId) {
   const query = `
-        SELECT p.*, u.username, u.image_url FROM users u
-        JOIN posts p ON p.user_id = u.id
-        LEFT JOIN hashtags_posts hp ON p.id = hp.post_id
-        WHERE p.user_id = $1
-        ORDER BY p.created_at DESC;
+    SELECT
+      p.id, p.text, 
+      ur.url, ur.image_url as "urlPicture", ur.title as "urlTitle", ur.description as "urlDescription",
+      us.id as "userId", us.image_url as "userPictureUrl", us.username
+    FROM users us
+    JOIN posts p ON p.user_id = us.id
+    JOIN urls ur on p.url_id = ur.id
+    WHERE p.user_id = $1
+    ORDER BY p.created_at DESC;
     `;
   const response = await db.query(query, [userId]);
   return response.rows;

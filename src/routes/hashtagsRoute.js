@@ -5,7 +5,7 @@ import requireToken from '../middlewares/requireToken.js';
 
 const router = Router();
 
-router.get('/trending', requireToken, getTrendingHashtags);
+router.get('/trending', getTrendingHashtags);
 router.get('/:hashtag/posts', requireToken, validateHashtag, getHashtagPosts);
 
 export default router;
