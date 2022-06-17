@@ -8,6 +8,7 @@ import CustomError from '../util/CustomError.js';
 import { MIDDLEWARE } from '../blueprints/chalk.js';
 import { SignInSchema, SignUpSchema } from '../models/authModel.js';
 import db from '../database/index.js';
+import { userRepository } from '../repositories/users.js';
 
 async function validateSignUp(req, res, next) {
   try {
@@ -72,9 +73,7 @@ async function usernameIsUnique(_req, res, next) {
   try {
     const { username } = res.locals;
 
-    const query = SqlString.format(`SELECT * FROM users WHERE username = ?`, [username]);
-    const result = await db.query(query);
-    const user = result.rows[0] ?? null;
+    const user = await userRepository.getUserByUsername(username);
 
     if (user) {
       throw new CustomError(
@@ -95,9 +94,7 @@ async function findUser(req, res, next) {
   try {
     const username = stripHtml(req.body.username).result.trim();
 
-    const query = SqlString.format(`SELECT * FROM users WHERE username = ?`, [username]);
-    const result = await db.query(query);
-    const user = result.rows[0] ?? null;
+    const user = await userRepository.getUserByUsername(username);
 
     if (!user) {
       throw new CustomError(
@@ -119,9 +116,7 @@ async function validateUserId(req, res, next) {
   try {
     const { userId } = res.locals;
 
-    const query = SqlString.format(`SELECT * FROM users WHERE id = ?`, [userId]);
-    const result = await db.query(query);
-    const user = result.rows[0] ?? null;
+    const user = await userRepository.getUserById(userId);
 
     if (!user) {
       throw new CustomError(
@@ -132,6 +127,7 @@ async function validateUserId(req, res, next) {
     }
 
     res.locals.user = user;
+    console.log(res.locals);
     console.log(chalk.magenta(`${MIDDLEWARE} User found`));
     next();
   } catch (e) {
