@@ -2,7 +2,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/NivaldoFarias/shortly-api">
+  <a href="https://github.com/NivaldoFarias/linkr-backend#readme">
     <img src="" alt="Logo" width="120">
   </a>
 
@@ -11,7 +11,9 @@
   <p align="center">
     Full Stack Development Project
     <br />
-    <a href="https://github.com/NivaldoFarias/shortly-api/tree/main/app.js"><strong>Browse Nodejs code»</strong></a>
+    <a href="https://github.com/NivaldoFarias/linkr-backend/tree/main/src"><strong>Browse Nodejs code»</strong></a>
+    -
+    <a href="https://github.com/NivaldoFarias/linkr-frontend#readme"><strong>Front end code»</strong></a>
 </div>
 
 <div align="center">
@@ -41,6 +43,16 @@ In this section I included all Youtube content I used or refered to while studyi
 
 [![LinkedIn][linkedin-shield]][linkedin-url]
 [![Slack][slack-shield]][slack-url]
+
+#
+
+### Contributors
+
+<a href="https://github.com/NivaldoFarias/linkr-frontend/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=NivaldoFarias/linkr-frontend" />
+</a>
+
+###### Made with [contrib.rocks](https://contrib.rocks)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
