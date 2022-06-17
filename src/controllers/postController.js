@@ -79,3 +79,22 @@ export async function unlikePost(req, res) {
     }
 }
 
+export async function getPost(req, res) {
+    const { postId } = res.locals;
+    try {
+        const post = await postsRepository.getPost(postId);
+        const likes = await postsRepository.getPostLikes(post.id);
+        post.totalLikes = likes.length;
+        post.usersWhoLiked = likes.length > 0 ? likes.slice(0, likes.length > 2 ? 2 : likes.length) : [];
+        post.userHasLiked = false;
+        for (const like of likes) {
+            if (like.userId === res.locals.userId) {
+                post.userHasLiked = true;
+            }
+        }
+        res.send(post);
+    } catch (e) {
+        res.status(500).send({ error: e });
+    }
+}
+

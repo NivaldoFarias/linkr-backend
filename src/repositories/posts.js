@@ -99,6 +99,20 @@ async function unlikePost(userId, postId) {
   return response.rows[0];
 }
 
+async function getPost(postId) {
+  const query = `
+  SELECT
+    p.id, p.text, 
+    ur.url, ur.image_url as "urlPicture", ur.title as "urlTitle", ur.description as "urlDescription",
+    us.id as "userId", us.image_url as "userPictureUrl", us.username
+  FROM posts p
+  JOIN urls ur on p.url_id = ur.id
+  JOIN users us on p.user_id = us.id
+  WHERE p.id = $1
+  LIMIT 20;`
+  const response = await db.query(query, [postId]);
+  return response.rows[0];
+}
 
 export const postsRepository = {
   getPostsByHashtagId,
@@ -109,5 +123,6 @@ export const postsRepository = {
   userIdHasLikedPost,
   likePost,
   unlikePost,
-  getPostLikes
+  getPostLikes,
+  getPost
 };
