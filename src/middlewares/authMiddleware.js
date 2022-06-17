@@ -125,9 +125,7 @@ async function validateUserId(req, res, next) {
         'Ensure to provide a valid username corresponding to a registered user',
       );
     }
-
     res.locals.user = user;
-    console.log(res.locals);
     console.log(chalk.magenta(`${MIDDLEWARE} User found`));
     next();
   } catch (e) {

@@ -61,3 +61,37 @@ export async function createPost(req, res, next) {
         next(e);
     }
 }
+
+
+export async function validatePostId(req, res, next) {
+    const { postId } = req.params;
+    try {
+        const post = await postsRepository.findPostById(postId);
+        if (post) {
+            res.locals.postId = postId;
+            console.log(chalk.magenta(`${MIDDLEWARE} post found`));
+            next();
+        } else {
+            console.log(chalk.magenta(`${MIDDLEWARE} post not found`));
+            res.sendStatus(404);
+        }
+    }
+    catch (e) {
+        next(e);
+    }
+}
+
+
+export async function checkIfUserHasLikedPost(req, res, next) {
+    const { userId } = res.locals;
+    const { postId } = req.params;
+    try {
+        const userHasLikedPost = await postsRepository.userIdHasLikedPost(userId, postId);
+        res.locals.userHasLikedPost = userHasLikedPost;
+        console.log(chalk.magenta(`${MIDDLEWARE} user has ${userHasLikedPost ? '' : 'not '}already liked post`));
+        next();
+    }
+    catch (e) {
+        next(e);
+    }
+}

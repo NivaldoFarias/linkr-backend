@@ -1,4 +1,10 @@
+import chalk from "chalk";
+import { MIDDLEWARE } from "../blueprints/chalk.js";
 import { hashtagRepository } from "../repositories/hashtags.js";
+import { postsRepository } from "../repositories/posts.js";
+import { userRepository } from "../repositories/users.js";
+
+
 
 export async function saveHashtags(req, res, next) {
     const { text } = req.body;
@@ -37,3 +43,58 @@ export async function saveHashtags(req, res, next) {
 
     res.sendStatus(201);
 }
+
+
+export async function likePost(req, res) {
+    const { userId, postId, userHasLikedPost } = res.locals;
+    if (!userHasLikedPost) {
+        try {
+            await postsRepository.likePost(userId, postId);
+            console.log(chalk.magenta(`${MIDDLEWARE} user liked post`));
+            res.sendStatus(201);
+        } catch (e) {
+            res.sendStatus(500);
+        }
+    }
+    else {
+        console.log(chalk.magenta(`${MIDDLEWARE} nothing happened`));
+        res.sendStatus(200);
+    }
+}
+
+export async function unlikePost(req, res) {
+    const { userId, postId, userHasLikedPost } = res.locals;
+    if (userHasLikedPost) {
+        try {
+            await postsRepository.unlikePost(userId, postId);
+            console.log(chalk.magenta(`${MIDDLEWARE} user unliked post`));
+            res.sendStatus(200);
+        } catch (e) {
+            res.sendStatus(500);
+        }
+    }
+    else {
+        console.log(chalk.magenta(`nothing happened`));
+        res.sendStatus(200);
+    }
+}
+
+export async function getPost(req, res) {
+    const { postId } = res.locals;
+    try {
+        const post = await postsRepository.getPost(postId);
+        const likes = await postsRepository.getPostLikes(post.id);
+        post.totalLikes = likes.length;
+        post.usersWhoLiked = likes.length > 0 ? likes.slice(0, likes.length > 2 ? 2 : likes.length) : [];
+        post.userHasLiked = false;
+        for (const like of likes) {
+            if (like.userId === res.locals.userId) {
+                post.userHasLiked = true;
+            }
+        }
+        res.send(post);
+    } catch (e) {
+        res.status(500).send({ error: e });
+    }
+}
+
