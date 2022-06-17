@@ -13,11 +13,24 @@ export const usersByUserName = async (req, res, next) => {
 
 export const usersPosts = async (req, res, next) => {
   try {
-    const { userId: id } = req.params;
+    const id = req.params.userId;
     const [user, posts] = await Promise.all([
-      userRepository.getUserById(id), 
+      userRepository.getUserById(id),
       postsRepository.getPostsByUserId(id),
     ]);
+
+    for (const post of posts) {
+      const likes = await postsRepository.getPostLikes(post.id);
+      post.totalLikes = likes.length;
+      post.usersWhoLiked = likes.length > 0 ? likes.slice(0, likes.length > 2 ? 2 : likes.length) : [];
+      post.userHasLiked = false;
+      for (const like of likes) {
+        if (like.userId === res.locals.userId) {
+          post.userHasLiked = true;
+        }
+      }
+    }
+
     res.status(200).json({ ...user, posts });
   } catch (e) {
     next(e);
