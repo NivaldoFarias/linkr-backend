@@ -20,7 +20,7 @@ async function signUp(_req, res) {
 
 async function signIn(_req, res) {
   const {
-    user: { id, username },
+    user: { id, username, imageUrl },
   } = res.locals;
   const data = { userId: id };
   const secretKey = process.env.JWT_SECRET ?? 'JWT_SECRET';
@@ -29,7 +29,7 @@ async function signIn(_req, res) {
   const token = jwt.sign(data, secretKey, config);
 
   console.log(chalk.blue(`${API} User ${username} signed in successfully`));
-  return res.status(200).send({ token });
+  return res.status(200).send({ token, imageUrl, username });
 }
 
 export { signUp, signIn };

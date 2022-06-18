@@ -48,7 +48,7 @@ In this section I included all Youtube content I used or refered to while studyi
 
 ### Contributors
 
-<a href="https://github.com/NivaldoFarias/linkr-frontend/graphs/contributors">
+<a href="https://github.com/NivaldoFarias/linkr-backend/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=NivaldoFarias/linkr-frontend" />
 </a>
 
