@@ -13,7 +13,7 @@ const getUsersByUserName = async (username) => {
 
 const getUserById = async (id) => {
   const searchQuery = `
-      SELECT users.username, users.image_url as "imageUrl"
+      SELECT id, username, image_url as "imageUrl"
       FROM users
       WHERE users.id = $1;
     `;

@@ -36,3 +36,13 @@ export const usersPosts = async (req, res, next) => {
     next(e);
   }
 };
+
+export async function getUser(req, res, next) {
+  try {
+    const { userId } = res.locals;
+    const user = await userRepository.getUserById(userId);
+    res.status(200).json({ user });
+  } catch (e) {
+    next(e);
+  }
+}
