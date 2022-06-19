@@ -111,32 +111,43 @@ async function getPost(postId) {
   return response.rows[0];
 }
 
-async function deletePostById(postId, userId){
-  const query =`
+async function updatePost(postId, text) {
+  const query = `
+    UPDATE posts
+    SET text = '${text}'
+    WHERE id = ${postId}
+    RETURNING *;
+  `;
+  const response = await db.query(query);
+  return response.rows[0];
+}
+
+async function deletePostById(postId, userId) {
+  const query = `
     DELETE FROM posts 
     WHERE id=$1 AND user_id=$2
   `;
 
   const response = await db.query(query, [postId, userId]);
-  return response.rows[0]
+  return response.rows[0];
 }
 
-async function deleteHastagsPostsByPostId(postId){
-  const query =`
+async function deleteHastagsPostsByPostId(postId) {
+  const query = `
     DELETE FROM hashtags_posts 
     WHERE post_id=$1
   `;
   const response = await db.query(query, [postId]);
-  return response.rows[0]
+  return response.rows[0];
 }
 
-async function deleteLikesByPostId(postId){
-  const query =`
+async function deleteLikesByPostId(postId) {
+  const query = `
     DELETE FROM likes
     WHERE post_id=$1
   `;
   const response = await db.query(query, [postId]);
-  return response.rows[0]
+  return response.rows[0];
 }
 
 export const postsRepository = {
@@ -152,5 +163,6 @@ export const postsRepository = {
   getPost,
   deletePostById,
   deleteHastagsPostsByPostId,
-  deleteLikesByPostId
+  deleteLikesByPostId,
+  updatePost,
 };

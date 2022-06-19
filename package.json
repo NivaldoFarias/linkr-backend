@@ -26,6 +26,7 @@
     "ky": "^0.30.0",
     "nanoid": "^4.0.0",
     "pg": "^8.7.3",
+    "sanitize-html": "^2.7.0",
     "sqlstring": "^2.3.3",
     "string-strip-html": "^9.1.12",
     "url-exist": "^3.0.0",
