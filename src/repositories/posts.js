@@ -33,7 +33,6 @@ async function getPostsByUserId(userId) {
   return response.rows;
 }
 
-
 async function getTimelinePosts() {
   const query = `
     SELECT
@@ -61,9 +60,7 @@ async function getPostLikes(postId) {
   return response.rows;
 }
 
-
 async function insertPost(text, urlId, userId) {
-
   const query = `
     INSERT INTO posts (text, url_id, user_id)
     VALUES ($1, $2, $3)
@@ -74,27 +71,27 @@ async function insertPost(text, urlId, userId) {
 }
 
 async function findPostById(postId) {
-  const query = `SELECT * FROM posts WHERE id = $1`
+  const query = `SELECT * FROM posts WHERE id = $1`;
   const response = await db.query(query, [postId]);
   return response.rows[0];
 }
 
 async function userIdHasLikedPost(userId, postId) {
-  const query = `SELECT * FROM likes WHERE user_id = $1 AND post_id = $2`
+  const query = `SELECT * FROM likes WHERE user_id = $1 AND post_id = $2`;
   const response = await db.query(query, [userId, postId]);
-  const hasLiked = (response.rows.length > 0) ?? false;
-  return (hasLiked);
+  const hasLiked = response.rows.length > 0 ?? false;
+  return hasLiked;
 }
 
 async function likePost(userId, postId) {
-  const query = `INSERT INTO likes (user_id, post_id) VALUES ($1, $2)`
+  const query = `INSERT INTO likes (user_id, post_id) VALUES ($1, $2)`;
   console.log(query, [userId, postId]);
   const response = await db.query(query, [userId, postId]);
   return response.rows[0];
 }
 
 async function unlikePost(userId, postId) {
-  const query = `DELETE FROM likes WHERE user_id = $1 AND post_id = $2`
+  const query = `DELETE FROM likes WHERE user_id = $1 AND post_id = $2`;
   const response = await db.query(query, [userId, postId]);
   return response.rows[0];
 }
@@ -109,7 +106,7 @@ async function getPost(postId) {
   JOIN urls ur on p.url_id = ur.id
   JOIN users us on p.user_id = us.id
   WHERE p.id = $1
-  LIMIT 20;`
+  LIMIT 20;`;
   const response = await db.query(query, [postId]);
   return response.rows[0];
 }

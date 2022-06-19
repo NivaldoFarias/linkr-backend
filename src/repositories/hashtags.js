@@ -36,7 +36,7 @@ export async function findHashtag(hashtag) {
 
 export async function createHashtag(hashtag) {
   const query = `
-        INSERT INTO hashtags ("name") VALUES ($1) RETURNING *;`
+        INSERT INTO hashtags ("name") VALUES ($1) RETURNING *;`;
   const response = await db.query(query, [hashtag]);
   return response.rows[0];
 }
@@ -51,7 +51,7 @@ export async function findHashtagPost(hashtagId, postId) {
 
 export async function createHashtagPost(hashtagId, postId) {
   const query = `
-        INSERT INTO hashtags_posts (hashtag_id, post_id) VALUES ($1, $2) RETURNING *;`
+        INSERT INTO hashtags_posts (hashtag_id, post_id) VALUES ($1, $2) RETURNING *;`;
   const response = await db.query(query, [hashtagId, postId]);
   return response.rows[0];
 }
@@ -62,5 +62,5 @@ export const hashtagRepository = {
   findHashtag,
   createHashtag,
   findHashtagPost,
-  createHashtagPost
+  createHashtagPost,
 };

@@ -149,4 +149,11 @@ async function validatePassword(req, res, next) {
   }
 }
 
-export { validateSignUp, validateSignIn, usernameIsUnique, findUser, validatePassword, validateUserId };
+export {
+  validateSignUp,
+  validateSignIn,
+  usernameIsUnique,
+  findUser,
+  validatePassword,
+  validateUserId,
+};

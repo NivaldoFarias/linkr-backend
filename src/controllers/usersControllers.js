@@ -22,7 +22,8 @@ export const usersPosts = async (req, res, next) => {
     for (const post of posts) {
       const likes = await postsRepository.getPostLikes(post.id);
       post.totalLikes = likes.length;
-      post.usersWhoLiked = likes.length > 0 ? likes.slice(0, likes.length > 2 ? 2 : likes.length) : [];
+      post.usersWhoLiked =
+        likes.length > 0 ? likes.slice(0, likes.length > 2 ? 2 : likes.length) : [];
       post.userHasLiked = false;
       for (const like of likes) {
         if (like.userId === res.locals.userId) {

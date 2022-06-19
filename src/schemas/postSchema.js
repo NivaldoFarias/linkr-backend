@@ -4,7 +4,7 @@ const REG_URL =
 
 const postSchema = Joi.object({
   text: Joi.string(),
-  url: Joi.string().pattern(new RegExp(REG_URL)).required()
+  url: Joi.string().pattern(new RegExp(REG_URL)).required(),
 });
 
 export default postSchema;
