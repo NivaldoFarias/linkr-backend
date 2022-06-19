@@ -75,6 +75,21 @@ export async function unlikePost(_req, res) {
   }
 }
 
+
+export async function deletePost(req, res) {
+    const { userId, postId } = res.locals;
+    console.log("hello",userId, postId)
+    try {
+        await postsRepository.deleteHastagsPostsByPostId(postId);
+        await postsRepository.deleteLikesByPostId(postId);
+        await postsRepository.deletePostById(postId, userId);
+        console.log(chalk.magenta(`${MIDDLEWARE} user delete post`));
+        res.sendStatus(204);
+    } catch (error) {
+        res.sendStatus(500);
+    }
+}
+
 export async function getPost(_req, res) {
   const { postId } = res.locals;
   try {
