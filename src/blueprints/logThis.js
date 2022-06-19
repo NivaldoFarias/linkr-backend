@@ -1,10 +1,12 @@
+import { LOG } from './chalk,js';
+
 export default function logThis(text) {
-    return (req, _res, next) => {
-        try {
-            console.log(text);
-            next();
-        } catch (e) {
-            next(e);
-        }
-    };
+  return (_req, _res, next) => {
+    try {
+      console.log(`${LOG} ${text}`);
+      next();
+    } catch (e) {
+      next(e);
+    }
+  };
 }

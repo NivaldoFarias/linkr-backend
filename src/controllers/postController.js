@@ -71,10 +71,9 @@ export async function unlikePost(_req, res) {
   }
 }
 
-
 export async function deletePost(req, res) {
   const { userId, postId } = res.locals;
-  console.log("hello", userId, postId)
+  console.log('hello', userId, postId);
   try {
     await postsRepository.deleteHastagsPostsByPostId(postId);
     await postsRepository.deleteLikesByPostId(postId);
@@ -125,12 +124,11 @@ export async function updatePost(req, res) {
       if (!cleanHashtags.includes(hashtagPost.hashtag)) {
         await hashtagRepository.deleteHashtagPost(hashtagPost.id);
       }
-    })
+    });
 
     console.log(chalk.magenta(`${MIDDLEWARE} updated post hashtags`));
     res.sendStatus(200);
-  }
-  catch (error) {
+  } catch (error) {
     res.sendStatus(500);
   }
 }

@@ -83,5 +83,5 @@ export const hashtagRepository = {
   findHashtagPost,
   createHashtagPost,
   findHashtagsPostsByPostId,
-  deleteHashtagPost
+  deleteHashtagPost,
 };

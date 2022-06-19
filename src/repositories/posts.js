@@ -129,7 +129,7 @@ async function deletePostById(postId, userId) {
   `;
 
   const response = await db.query(query, [postId, userId]);
-  return response.rows[0]
+  return response.rows[0];
 }
 
 async function deleteHastagsPostsByPostId(postId) {
@@ -138,7 +138,7 @@ async function deleteHastagsPostsByPostId(postId) {
     WHERE post_id=$1
   `;
   const response = await db.query(query, [postId]);
-  return response.rows[0]
+  return response.rows[0];
 }
 
 async function deleteLikesByPostId(postId) {
@@ -147,7 +147,7 @@ async function deleteLikesByPostId(postId) {
     WHERE post_id=$1
   `;
   const response = await db.query(query, [postId]);
-  return response.rows[0]
+  return response.rows[0];
 }
 
 export const postsRepository = {
@@ -164,5 +164,5 @@ export const postsRepository = {
   deletePostById,
   deleteHastagsPostsByPostId,
   deleteLikesByPostId,
-  updatePost
+  updatePost,
 };

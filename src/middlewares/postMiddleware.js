@@ -82,8 +82,7 @@ export async function validatePostText(req, res, next) {
     res.locals.text = sanitizeHtml(text);
     console.log(chalk.magenta(`${MIDDLEWARE} text validated`));
     next();
-  }
-  else {
+  } else {
     console.log(chalk.magenta(`${MIDDLEWARE} text not validated`));
     res.sendStatus(400);
   }
