@@ -3,6 +3,7 @@ import { MIDDLEWARE } from '../blueprints/chalk.js';
 import chalk from 'chalk';
 import { urlsRepository } from '../repositories/urls.js';
 import urlMetadata from 'url-metadata';
+import sanitizeHtml from 'sanitize-html';
 
 export async function findUrl(req, res, next) {
   try {
@@ -74,6 +75,19 @@ export async function validatePostId(req, res, next) {
     }
   } catch (e) {
     next(e);
+  }
+}
+
+export async function validatePostText(req, res, next) {
+  const { text } = req.body;
+  if (text) {
+    res.locals.text = sanitizeHtml(text);
+    console.log(chalk.magenta(`${MIDDLEWARE} text validated`));
+    next();
+  }
+  else {
+    console.log(chalk.magenta(`${MIDDLEWARE} text not validated`));
+    res.sendStatus(400);
   }
 }
 

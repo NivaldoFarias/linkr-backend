@@ -56,6 +56,25 @@ export async function createHashtagPost(hashtagId, postId) {
   return response.rows[0];
 }
 
+export async function deleteHashtagPost(id) {
+  const query = `
+      DELETE FROM hashtags_posts WHERE id = $1;
+  `;
+  const response = await db.query(query, [id]);
+  return response.rows[0];
+}
+
+export async function findHashtagsPostsByPostId(postId) {
+  const query = `
+      SELECT hp.*, h.name AS hashtag
+      FROM hashtags_posts hp 
+      LEFT JOIN hashtags h ON hp.hashtag_id = h.id
+      WHERE hp.post_id = $1;
+  `;
+  const response = await db.query(query, [postId]);
+  return response.rows;
+}
+
 export const hashtagRepository = {
   getHashtagIdByName,
   getTrendingHashtags,
@@ -63,4 +82,6 @@ export const hashtagRepository = {
   createHashtag,
   findHashtagPost,
   createHashtagPost,
+  findHashtagsPostsByPostId,
+  deleteHashtagPost
 };

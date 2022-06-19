@@ -8,12 +8,9 @@ export async function saveHashtags(req, res, next) {
   const { text } = req.body;
   const { postId } = res.locals;
   const hashtags = text.match(/#[a-zA-Z0-9]+/g);
+  const cleanHashtags = hashtags.map((hashtag) => hashtag.substring(1).toLowerCase());
   if (hashtags) {
     try {
-      // clean hashtags
-      const cleanHashtags = hashtags.map((hashtag) => hashtag.substring(1).toLowerCase());
-
-      // create hashtags and create if not exist
       const hashtagIds = await Promise.all(
         cleanHashtags.map(async (hashtag) => {
           const foundHashtag = await hashtagRepository.findHashtag(hashtag);
@@ -26,7 +23,6 @@ export async function saveHashtags(req, res, next) {
         }),
       );
 
-      // check hashtags_posts and create if not exists
       await Promise.all(
         hashtagIds.map(async (hashtagId) => {
           const foundHashtagPost = await hashtagRepository.findHashtagPost(hashtagId, postId);
@@ -77,17 +73,66 @@ export async function unlikePost(_req, res) {
 
 
 export async function deletePost(req, res) {
-    const { userId, postId } = res.locals;
-    console.log("hello",userId, postId)
-    try {
-        await postsRepository.deleteHastagsPostsByPostId(postId);
-        await postsRepository.deleteLikesByPostId(postId);
-        await postsRepository.deletePostById(postId, userId);
-        console.log(chalk.magenta(`${MIDDLEWARE} user delete post`));
-        res.sendStatus(204);
-    } catch (error) {
-        res.sendStatus(500);
-    }
+  const { userId, postId } = res.locals;
+  console.log("hello", userId, postId)
+  try {
+    await postsRepository.deleteHastagsPostsByPostId(postId);
+    await postsRepository.deleteLikesByPostId(postId);
+    await postsRepository.deletePostById(postId, userId);
+    console.log(chalk.magenta(`${MIDDLEWARE} user delete post`));
+    res.sendStatus(204);
+  } catch (error) {
+    res.sendStatus(500);
+  }
+}
+
+export async function updatePost(req, res) {
+  const { postId, text } = res.locals;
+  const hashtags = text.match(/#[a-zA-Z0-9]+/g);
+  const cleanHashtags = hashtags.map((hashtag) => hashtag.substring(1).toLowerCase());
+  console.log(cleanHashtags);
+
+  try {
+    await postsRepository.updatePost(postId, text);
+    console.log(chalk.magenta(`${MIDDLEWARE} user update post`));
+
+    const hashtagIds = await Promise.all(
+      cleanHashtags.map(async (hashtag) => {
+        const foundHashtag = await hashtagRepository.findHashtag(hashtag);
+        if (foundHashtag) {
+          return foundHashtag.id;
+        } else {
+          const newHashtag = await hashtagRepository.createHashtag(hashtag);
+          return newHashtag.id;
+        }
+      }),
+    );
+
+    // check hashtags_posts and create if not exists
+    await Promise.all(
+      hashtagIds.map(async (hashtagId) => {
+        const foundHashtagPost = await hashtagRepository.findHashtagPost(hashtagId, postId);
+        if (!foundHashtagPost) {
+          await hashtagRepository.createHashtagPost(hashtagId, postId);
+        }
+      }),
+    );
+
+    // delete hashtags_posts if not exists
+    const hashtagsPosts = await hashtagRepository.findHashtagsPostsByPostId(postId);
+    hashtagsPosts.forEach(async (hashtagPost) => {
+      // if hashtagPost not in cleanHashtags, delete it
+      if (!cleanHashtags.includes(hashtagPost.hashtag)) {
+        await hashtagRepository.deleteHashtagPost(hashtagPost.id);
+      }
+    })
+
+    console.log(chalk.magenta(`${MIDDLEWARE} updated post hashtags`));
+    res.sendStatus(200);
+  }
+  catch (error) {
+    res.sendStatus(500);
+  }
 }
 
 export async function getPost(_req, res) {
