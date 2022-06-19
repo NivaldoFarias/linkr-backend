@@ -46,12 +46,10 @@ export async function createUrl(req, res, next) {
 }
 
 export async function createPost(req, res, next) {
-  console.log(res.locals);
   const { userId, url } = res.locals;
   const urlId = url.id;
   const { text } = req.body;
   try {
-    console.log('creating post...', userId, urlId, text);
     const post = await postsRepository.insertPost(text, urlId, userId);
     res.locals.postId = post.id;
     console.log(chalk.magenta(`${MIDDLEWARE} post created. postId: `, post.id));
