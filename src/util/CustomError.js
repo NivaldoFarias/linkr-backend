@@ -7,6 +7,6 @@ class CustomError extends Error {
     this.details = details;
     this.statusMessage = http.STATUS_CODES[statusCode];
   }
-};
+}
 
 export default CustomError;
