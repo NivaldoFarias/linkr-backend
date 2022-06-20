@@ -32,7 +32,7 @@ postRouter
     findUrl,
     createUrl,
     createPost,
-    saveHashtags,
+    saveHashtags
   );
 
 postRouter.route('/:postId').get(requireToken, validateUserId, validatePostId, getPost);

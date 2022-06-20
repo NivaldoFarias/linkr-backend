@@ -7,9 +7,11 @@ import { postsRepository } from '../repositories/posts.js';
 export async function saveHashtags(req, res, next) {
   const { text } = req.body;
   const { postId } = res.locals;
-  const hashtags = text.match(/#[a-zA-Z0-9]+/g);
+  const hashtags = text.match(/#[a-zA-Z0-9]+/g) || [];
+  console.log(hashtags);
   const cleanHashtags = hashtags.map((hashtag) => hashtag.substring(1).toLowerCase());
-  if (hashtags) {
+
+  if (cleanHashtags) {
     try {
       const hashtagIds = await Promise.all(
         cleanHashtags.map(async (hashtag) => {
@@ -23,6 +25,7 @@ export async function saveHashtags(req, res, next) {
         }),
       );
 
+      console.log(chalk.magenta(`${MIDDLEWARE} finding hashtags posts...`));
       await Promise.all(
         hashtagIds.map(async (hashtagId) => {
           const foundHashtagPost = await hashtagRepository.findHashtagPost(hashtagId, postId);
@@ -31,12 +34,17 @@ export async function saveHashtags(req, res, next) {
           }
         }),
       );
+
+      console.log(chalk.magenta(`${MIDDLEWARE} hashtags created`));
+      res.sendStatus(201);
     } catch (e) {
       next(e);
     }
   }
-
-  res.sendStatus(201);
+  else {
+    console.log(chalk.magenta(`${MIDDLEWARE} no hashtags found`));
+    res.sendStatus(201);
+  }
 }
 
 export async function likePost(_req, res) {
@@ -89,11 +97,8 @@ export async function updatePost(req, res) {
   const { postId, text } = res.locals;
   const hashtags = text.match(/#[a-zA-Z0-9]+/g);
   const cleanHashtags = hashtags.map((hashtag) => hashtag.substring(1).toLowerCase());
-  console.log(cleanHashtags);
-
   try {
     await postsRepository.updatePost(postId, text);
-    console.log(chalk.magenta(`${MIDDLEWARE} user update post`));
 
     const hashtagIds = await Promise.all(
       cleanHashtags.map(async (hashtag) => {
