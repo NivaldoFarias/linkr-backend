@@ -15,12 +15,11 @@ async function getTrendingHashtags(hashtag) {
             COUNT(l.id) AS likes_count,
             COUNT(p.id) AS posts_count
         FROM hashtags h 
-        LEFT JOIN hashtags_posts hp ON h.id = hp.hashtag_id
+        JOIN hashtags_posts hp ON h.id = hp.hashtag_id
         LEFT JOIN posts p ON hp.post_id = p.id
         LEFT JOIN likes l ON p.id = l.post_id
         GROUP BY h.id
-        ORDER BY likes_count DESC, posts_count DESC
-        LIMIT 10;
+        ORDER BY likes_count DESC, posts_count DESC;
     `;
   const response = await db.query(query);
   return response.rows;

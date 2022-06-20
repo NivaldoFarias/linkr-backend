@@ -32,18 +32,21 @@ postRouter
     findUrl,
     createUrl,
     createPost,
-    saveHashtags,
+    saveHashtags
   );
 
 postRouter.route('/:postId').get(requireToken, validateUserId, validatePostId, getPost);
+
 postRouter
   .route('/:postId')
   .put(requireToken, validateUserId, validatePostId, validatePostText, updatePost);
+
 postRouter.route('/:postId').delete(requireToken, validateUserId, validatePostId, deletePost);
 
 postRouter
   .route('/:postId/like')
   .post(requireToken, validateUserId, validatePostId, checkIfUserHasLikedPost, likePost);
+
 postRouter
   .route('/:postId/unlike')
   .post(requireToken, validateUserId, validatePostId, checkIfUserHasLikedPost, unlikePost);

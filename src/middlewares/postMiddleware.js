@@ -26,9 +26,12 @@ export async function createUrl(req, res, next) {
     const url = { url: req.body.url, title: '', description: '', imageUrl: '' };
     try {
       const promise = await urlMetadata(url.url).then((metadata) => {
+        // console.log(metadata);
         url.title = metadata.title;
         url.description = metadata.description;
         url.imageUrl = metadata.image;
+      }).catch((e) => {
+        console.log(chalk.red(`${MIDDLEWARE} error getting url metadata: ${e}`))
       });
       const newUrl = await urlsRepository.createUrl(
         url.url,
@@ -40,6 +43,7 @@ export async function createUrl(req, res, next) {
       console.log(chalk.magenta(`${MIDDLEWARE} url created`));
       next();
     } catch (e) {
+      console.log('ERROR!', e);
       next(e);
     }
   }
