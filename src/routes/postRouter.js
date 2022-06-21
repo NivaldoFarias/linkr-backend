@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import logThis from '../blueprints/logThis.js';
 import {
   likePost,
   saveHashtags,
@@ -21,11 +22,13 @@ import requireToken from '../middlewares/requireToken.js';
 import { validateSchema } from '../middlewares/schemaValidator.js';
 import postSchema from '../schemas/postSchema.js';
 
+
 const postRouter = Router();
 
 postRouter
   .route('/')
   .post(
+    logThis('Post new post'),
     validateSchema(postSchema),
     requireToken,
     validateUserId,
@@ -35,20 +38,20 @@ postRouter
     saveHashtags
   );
 
-postRouter.route('/:postId').get(requireToken, validateUserId, validatePostId, getPost);
+postRouter.route('/:postId').get(logThis('Get post by id'), requireToken, validateUserId, validatePostId, getPost);
 
 postRouter
   .route('/:postId')
-  .put(requireToken, validateUserId, validatePostId, validatePostText, updatePost);
+  .put(logThis('Edit post'), requireToken, validateUserId, validatePostId, validatePostText, updatePost);
 
-postRouter.route('/:postId').delete(requireToken, validateUserId, validatePostId, deletePost);
+postRouter.route('/:postId').delete(logThis('Delete post'), requireToken, validateUserId, validatePostId, deletePost);
 
 postRouter
   .route('/:postId/like')
-  .post(requireToken, validateUserId, validatePostId, checkIfUserHasLikedPost, likePost);
+  .post(logThis('Like post'), requireToken, validateUserId, validatePostId, checkIfUserHasLikedPost, likePost);
 
 postRouter
   .route('/:postId/unlike')
-  .post(requireToken, validateUserId, validatePostId, checkIfUserHasLikedPost, unlikePost);
+  .post(logThis('Unlike post'), requireToken, validateUserId, validatePostId, checkIfUserHasLikedPost, unlikePost);
 
 export default postRouter;
