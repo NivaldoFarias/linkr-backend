@@ -1,4 +1,4 @@
-import { commentsRepository } from "../repositories/comments";
+import { commentsRepository } from "../repositories/comments.js";
 
 export async function createNewComment(req, res) {
     const { userId, postId, text } = res.locals
