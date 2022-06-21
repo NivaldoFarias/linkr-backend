@@ -95,7 +95,7 @@ export async function deletePost(req, res) {
 
 export async function updatePost(req, res) {
   const { postId, text } = res.locals;
-  const hashtags = text.match(/#[a-zA-Z0-9]+/g);
+  const hashtags = text.match(/#[a-zA-Z0-9]+/g) || [];
   const cleanHashtags = hashtags.map((hashtag) => hashtag.substring(1).toLowerCase());
   try {
     await postsRepository.updatePost(postId, text);
