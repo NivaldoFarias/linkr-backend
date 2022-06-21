@@ -4,6 +4,7 @@ import chalk from 'chalk';
 import { urlsRepository } from '../repositories/urls.js';
 import urlMetadata from 'url-metadata';
 import sanitizeHtml from 'sanitize-html';
+import { resharesRepository } from '../repositories/reshares.js';
 
 export async function findUrl(req, res, next) {
   try {
@@ -55,6 +56,7 @@ export async function createPost(req, res, next) {
   const { text } = req.body;
   try {
     const post = await postsRepository.insertPost(text, urlId, userId);
+    await resharesRepository.insertRepost(userId, post.id);
     res.locals.postId = post.id;
     console.log(chalk.magenta(`${MIDDLEWARE} post created. postId: `, post.id));
     next();
