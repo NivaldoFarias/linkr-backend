@@ -157,3 +157,13 @@ export async function getPost(_req, res) {
     res.status(500).send({ error: e });
   }
 }
+
+export async function commentPost(req, res) {
+  const { postId, userId, text } = res.locals;
+  try {
+    const comment = await postsRepository.createComment(postId, userId, text);
+    res.send(comment);
+  } catch (e) {
+    res.status(500).send({ error: e });
+  }
+}

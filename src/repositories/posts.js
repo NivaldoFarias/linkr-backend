@@ -150,6 +150,16 @@ async function deleteLikesByPostId(postId) {
   return response.rows[0];
 }
 
+async function createComment(postId, userId, text) {
+  const query = `
+    INSERT INTO comments (post_id, user_id, text)
+    VALUES ($1, $2, $3)
+    RETURNING *;
+  `;
+  const response = await db.query(query, [postId, userId, text]);
+  return response.rows[0];
+}
+
 export const postsRepository = {
   getPostsByHashtagId,
   getPostsByUserId,
@@ -165,4 +175,5 @@ export const postsRepository = {
   deleteHastagsPostsByPostId,
   deleteLikesByPostId,
   updatePost,
+  createComment
 };
