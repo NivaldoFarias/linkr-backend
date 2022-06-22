@@ -16,7 +16,6 @@ CREATE TABLE "users" (
 CREATE TABLE "posts" (
     "id" BIGSERIAL NOT NULL,
     "text" TEXT NOT NULL,
-    "url" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "user_id" BIGINT NOT NULL,
     "url_id" BIGINT NOT NULL,
@@ -66,7 +65,7 @@ CREATE TABLE "hashtags_posts" (
 CREATE TABLE "followings" (
     "id" BIGSERIAL NOT NULL,
     "user_id" BIGINT NOT NULL,
-    "follower_id" BIGINT NOT NULL,
+    "followed_id" BIGINT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "followings_pkey" PRIMARY KEY ("id")
@@ -98,7 +97,7 @@ CREATE UNIQUE INDEX "users_username_key" ON "users"("username");
 ALTER TABLE "followings" ADD CONSTRAINT "followings_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "followings" ADD CONSTRAINT "followings_follower_id_fkey" FOREIGN KEY ("follower_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "followings" ADD CONSTRAINT "followings_followed_id_fkey" FOREIGN KEY ("followed_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "comments" ADD CONSTRAINT "comments_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
