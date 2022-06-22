@@ -8,8 +8,6 @@ import { validateHashtag } from '../middlewares/hashtagsMiddleware.js';
 
 const router = Router();
 
-
-
 router.get('/trending', logThis('Get trending hashtags'), getTrendingHashtags);
 router.get('/:hashtag/posts', logThis('Get hashtags posts'), requireToken, validateHashtag, getHashtagData);
 

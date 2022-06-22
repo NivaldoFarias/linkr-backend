@@ -8,6 +8,13 @@ import { findUser } from '../middlewares/usersMiddleware.js';
 const authRouter = Router();
 
 authRouter.post('/sign-up', logThis('Signin up'), validateSignUp, usernameIsUnique, signUp);
-authRouter.post('/sign-in', logThis('Signin in'), validateSignIn, findUser, validatePassword, signIn);
+authRouter.post(
+  '/sign-in',
+  logThis('Signin in'),
+  validateSignIn,
+  findUser,
+  validatePassword,
+  signIn,
+);
 
 export default authRouter;

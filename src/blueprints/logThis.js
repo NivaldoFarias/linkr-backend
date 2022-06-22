@@ -1,4 +1,4 @@
-import { ROUTE } from "./chalk.js";
+import { ROUTE } from './chalk.js';
 
 export default function logThis(text) {
   return (_req, _res, next) => {

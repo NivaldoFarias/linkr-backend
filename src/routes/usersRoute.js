@@ -1,6 +1,5 @@
 import { Router } from 'express';
 import logThis from '../blueprints/logThis.js';
-
 import requireToken from '../middlewares/requireToken.js';
 import { getUser, usersByUserName } from '../controllers/usersController.js';
 import { validateUserId, validateVisitedUserId } from '../middlewares/usersMiddleware.js';

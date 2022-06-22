@@ -19,7 +19,6 @@ import { likePost, unlikePost } from '../controllers/likesController.js';
 import { sharePost, unsharePost } from '../controllers/sharesController.js';
 
 
-
 const postRouter = Router();
 
 // POST
