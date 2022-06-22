@@ -154,18 +154,85 @@ async function deleteLikesByPostId(postId) {
 
   add those functions to the module:
 
-  [ ] getTimelineShares(userId, beforeDate, afterDate)
-  [ ] getPostById(postId)
-  [ ] getPostComments(postId)
-  [ ] getSharesInfo(postId, userId)
-  [ ] getOtherUserDataById(user.id, userId);
-  [ ] getPostLikes(postId);
+  [X] getTimelineShares(userId, beforeDate, afterDate)
+  [X] getPostById(postId)
+  [X] getPostComments(postId)
+  [X] getSharesInfo(postId, userId)
+  [X] getUserDataById(otherUserId, userId);
 
 */
 
+async function getTimelineShares(userId, beforeDate, afterDate, limit) {
 
+  // notes: 
+  // beforeDate and afterDate are strings in the format "YYYY-MM-DD" and are optional
+  // limit is an integer and is optional
 
+  const query = `
+    SELECT s.* FROM shares s
+    JOIN followings f ON f.following_id = s.user_id
+    WHERE f.user_id = $1
+    ${beforeDate ? `AND s.created_at < '${beforeDate}'` : ''}
+    ${afterDate ? `AND s.created_at > '${afterDate}'` : ''}
+    ORDER BY s.created_at DESC
+    ${limit ? `LIMIT ${limit}` : ''}
+  `;
+  const response = await db.query(query, [userId]);
+  return response.rows;
+}
 
+async function getPostById(postId) {
+  // id, createdAt, userId, text, url, image (url), title (url), description (url)
+  const query = `
+    SELECT
+      p.id, p.created_at AS "createdAt", p.user_id AS "userId", p.text,
+      ur.url, ur.image_url AS image, ur.title, ur.description
+    FROM posts p
+    JOIN urls ur ON p.url_id = ur.id
+    WHERE p.id = $1
+  `;
+  const response = await db.query(query, [postId]);
+  return response.rows[0];
+}
+
+async function getPostComments(postId) {
+  // userId, text, createdAt
+  const query = `
+    SELECT
+      c.user_id AS "userId", c.text, c.created_at AS "createdAt"
+    FROM comments c
+    WHERE c.post_id = $1
+  `;
+  const response = await db.query(query, [postId]);
+  return response.rows;
+}
+
+async function getSharesInfo(postId, userId) {
+  // userHasShared AND numberOfShares
+  const query = `
+    SELECT
+      COUNT(*) AS "numberOfShares",
+      COUNT(CASE WHEN user_id = $2 THEN 1 END) > 0 AS "userHasShared"
+    FROM shares
+    WHERE post_id = $1
+  `;
+  const response = await db.query(query, [postId, userId]);
+  return response.rows[0];
+}
+
+async function getUserDataById(otherUserId, userId) {
+  // id, username, imageUrl, isFollowing
+  const query = `
+    SELECT
+      u.id, u.username, u.image_url AS "imageUrl",
+      COUNT(CASE WHEN f.user_id = $2 THEN 1 END) > 0 AS "isFollowing"
+    FROM users u
+    LEFT JOIN followings f ON f.following_id = u.id
+    WHERE u.id = $1
+  `;
+  const response = await db.query(query, [otherUserId, userId]);
+  return response.rows[0];
+}
 
 export const postsRepository = {
   getPostsByHashtagId,
@@ -182,4 +249,10 @@ export const postsRepository = {
   deleteHastagsPostsByPostId,
   deleteLikesByPostId,
   updatePost,
+
+  getTimelineShares,
+  getPostById,
+  getPostComments,
+  getSharesInfo,
+  getUserDataById
 };
