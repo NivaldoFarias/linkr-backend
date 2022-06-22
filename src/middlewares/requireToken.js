@@ -1,8 +1,8 @@
 import jwt from 'jsonwebtoken';
 import chalk from 'chalk';
-
 import CustomError from './../util/CustomError.js';
 import { MIDDLEWARE } from './../blueprints/chalk.js';
+
 
 async function requireToken(req, res, next) {
   try {

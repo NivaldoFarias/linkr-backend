@@ -5,6 +5,7 @@ import chalk from 'chalk';
 
 import { API } from './../blueprints/chalk.js';
 import * as authRepository from './../repositories/auth.js';
+import { followingsRepository } from '../repositories/followings.js';
 
 dotenv.config();
 
@@ -13,7 +14,9 @@ async function signUp(_req, res) {
   const cryptPass = bcrypt.hashSync(password, 10);
   const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
-  await authRepository.signUp(email, cryptPass, username, imageUrl, createdAt);
+  const createdUser = await authRepository.signUp(email, cryptPass, username, imageUrl, createdAt);
+  // user has to follow itself
+  await followingsRepository.followUserById(createdUser.id, createdUser.id);
   console.log(chalk.blue(`${API} User ${username} registered successfully`));
   return res.sendStatus(201);
 }

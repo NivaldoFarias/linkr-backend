@@ -6,6 +6,17 @@ async function createNewComment(userId, postId, text) {
   return response.rows;
 }
 
+async function getPostComments(postId) {
+  const query = `
+      SELECT
+        c.id, c.user_id AS "userId", c.text, c.created_at AS "createdAt"
+      FROM comments c
+      WHERE c.post_id = $1
+    `;
+  const response = await db.query(query, [postId]);
+  return response.rows;
+}
+
 export const commentsRepository = {
-  createNewComment,
-};
+  createNewComment, getPostComments
+}

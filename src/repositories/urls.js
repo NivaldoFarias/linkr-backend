@@ -14,4 +14,6 @@ async function createUrl(url, title, description, imageUrl) {
   return result.rows[0] ?? null;
 }
 
-export const urlsRepository = { findUrl, createUrl };
+export const urlsRepository = {
+  findUrl, createUrl
+};
