@@ -231,6 +231,19 @@ async function getUserDataById(otherUserId, userId) {
   return response.rows[0];
 }
 
+async function checkTimelinePosts(userId, operand, date) {
+  const query = `
+    SELECT
+      COUNT(*) AS "numberOfShares"
+    FROM shares s
+    JOIN followings f ON f.followed_id = s.user_id
+    WHERE f.user_id = ${userId}
+    ${operand ? `AND s.created_at ${operand} '${date}'` : ''}
+  `;
+  const response = await db.query(query);
+  return response.rows[0].numberOfShares || 0;
+}
+
 export const postsRepository = {
   getPostsByHashtagId,
   getPostsByUserId,
@@ -251,5 +264,6 @@ export const postsRepository = {
   getPostById,
   getPostComments,
   getSharesInfo,
-  getUserDataById
+  getUserDataById,
+  checkTimelinePosts
 };

@@ -108,7 +108,7 @@ export async function checkIfUserHasLikedPost(req, res, next) {
 }
 
 
-export async function checkGetPostsQuery(req, res, next) {
+export function checkGetPostsQuery(req, res, next) {
   // beforeDate, afterDate, limit
   // date format example: 2022-06-22T04:11:06.391Z => YYYY-MM-DDTHH:MM:SS.SSSZ
   // validate FORMAT of beforeDate and afterDate. if invalid, save null to beforeDate and afterDate.
@@ -124,6 +124,25 @@ export async function checkGetPostsQuery(req, res, next) {
   console.log(chalk.magenta(`${MIDDLEWARE} query validated`));
   next();
 }
+
+export function checkCheckPostsQuery(req, res, next) {
+  const { beforeDate, afterDate } = req.query;
+
+  res.locals.beforeDate = validateDate(beforeDate);
+  res.locals.afterDate = validateDate(afterDate);
+
+  console.log(res.locals);
+
+  if (res.locals.beforeDate || res.locals.afterDate) {
+    console.log(chalk.magenta(`${MIDDLEWARE} query validated`));
+    next();
+  }
+  else {
+    console.log(chalk.magenta(`${MIDDLEWARE} query not validated`));
+    res.sendStatus(400);
+  }
+}
+
 
 function validateDate(date) {
   // YYYY-MM-DDTHH:MM:SS.SSSZ

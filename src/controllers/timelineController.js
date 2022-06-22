@@ -1,34 +1,34 @@
 import { postsRepository } from '../repositories/posts.js';
 import { API } from '../blueprints/chalk.js';
 
+// DEPRECATED
+// export async function getTimelinePosts_v1_deprecated(req, res) {
+//   const { userId } = res.locals;
+//   try {
+//     const posts = await postsRepository.getTimelinePosts();
+//     for (const post of posts) {
+//       const likes = await postsRepository.getPostLikes(post.id);
+//       const likesFiltered = likes.filter((like) => like.userId !== userId);
+//       post.totalLikes = likes.length;
+//       post.usersWhoLiked =
+//         likesFiltered.length > 0
+//           ? likesFiltered.slice(0, likesFiltered.length > 2 ? 2 : likesFiltered.length)
+//           : [];
+//       post.userHasLiked = false;
+//       for (const like of likes) {
+//         if (like.userId === res.locals.userId) {
+//           post.userHasLiked = true;
+//         }
+//       }
+//     }
+
+//     res.send(posts);
+//   } catch (e) {
+//     res.status(500).send({ error: e });
+//   }
+// }
+
 export async function getTimelinePosts(req, res) {
-  const { userId } = res.locals;
-  try {
-    const posts = await postsRepository.getTimelinePosts();
-    for (const post of posts) {
-      const likes = await postsRepository.getPostLikes(post.id);
-      const likesFiltered = likes.filter((like) => like.userId !== userId);
-      post.totalLikes = likes.length;
-      post.usersWhoLiked =
-        likesFiltered.length > 0
-          ? likesFiltered.slice(0, likesFiltered.length > 2 ? 2 : likesFiltered.length)
-          : [];
-      post.userHasLiked = false;
-      for (const like of likes) {
-        if (like.userId === res.locals.userId) {
-          post.userHasLiked = true;
-        }
-      }
-    }
-
-    res.send(posts);
-  } catch (e) {
-    res.status(500).send({ error: e });
-  }
-}
-
-
-export async function getTimelinePosts2(req, res) {
   const { userId, beforeDate, afterDate, limit } = res.locals;
 
   try {
@@ -100,11 +100,34 @@ export async function getTimelinePosts2(req, res) {
   }
 }
 
+export async function checkTimelinePosts(req, res) {
+  let { userId, afterDate, beforeDate } = res.locals;
+  afterDate = afterDate ? afterDate : beforeDate;
+  beforeDate = beforeDate ? beforeDate : afterDate;
+
+  try {
+    const postsBeforeDate = await postsRepository.checkTimelinePosts(userId, '<', beforeDate);
+    const postsAfterDate = await postsRepository.checkTimelinePosts(userId, '>', afterDate);
+
+    const data = {
+      beforeDate,
+      postsBeforeDate,
+      afterDate,
+      postsAfterDate,
+    }
+
+    res.send(data);
+  } catch (e) {
+    res.status(500).send({ error: e });
+  }
+}
+
+
+
+
 
 
 // ============================================================
-
-
 
 async function getPost(postId, userId) {
   const post = await postsRepository.getPostById(postId);
