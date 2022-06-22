@@ -47,3 +47,36 @@ export async function getUser(req, res, next) {
     next(e);
   }
 }
+
+export async function followUser(req, res, next) {
+  const { followed_id } = req.params;
+  const { userId, isFollowed } = res.locals;
+
+  if (isFollowed === true) {
+    return res.sendStatus(401);
+  }
+  
+  try {
+    userRepository.followUserById(followed_id, userId, isFollowed);
+    res.status(200).json({isFollowed: !isFollowed});
+  } catch (e) {
+    next(e);
+  }
+}
+
+export async function unfollowUser(req, res, next) {
+  const { followed_id } = req.params;
+  const { userId, isFollowed } = res.locals;
+
+  if (followed_id === userId || !isFollowed) {
+    return res.sendStatus(401)
+  }
+  
+  try {
+    userRepository.unfollowUserById(followed_id, userId);
+    res.status(200).json({isFollowed: !isFollowed});
+  } catch (e) {
+    next(e);
+  }
+}
+
