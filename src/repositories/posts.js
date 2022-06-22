@@ -150,17 +150,7 @@ async function deleteLikesByPostId(postId) {
   return response.rows[0];
 }
 
-/*
 
-  add those functions to the module:
-
-  [X] getTimelineShares(userId, beforeDate, afterDate)
-  [X] getPostById(postId)
-  [X] getPostComments(postId)
-  [X] getSharesInfo(postId, userId)
-  [X] getUserDataById(otherUserId, userId);
-
-*/
 
 async function getTimelineShares(userId, beforeDate, afterDate, limit) {
 
@@ -169,14 +159,17 @@ async function getTimelineShares(userId, beforeDate, afterDate, limit) {
   // limit is an integer and is optional
 
   const query = `
-    SELECT s.* FROM shares s
-    JOIN followings f ON f.following_id = s.user_id
+    SELECT 
+      s.id, s.post_id AS "postId", s.user_id AS "userId", s.created_at AS "createdAt"
+    FROM shares s
+    JOIN followings f ON f.user_id = s.user_id
     WHERE f.user_id = $1
     ${beforeDate ? `AND s.created_at < '${beforeDate}'` : ''}
     ${afterDate ? `AND s.created_at > '${afterDate}'` : ''}
     ORDER BY s.created_at DESC
-    ${limit ? `LIMIT ${limit}` : ''}
+    ${limit ? `LIMIT ${limit}` : ''};
   `;
+
   const response = await db.query(query, [userId]);
   return response.rows;
 }
@@ -222,14 +215,17 @@ async function getSharesInfo(postId, userId) {
 
 async function getUserDataById(otherUserId, userId) {
   // id, username, imageUrl, isFollowing
+  console.log('aqui', userId, otherUserId);
   const query = `
     SELECT
       u.id, u.username, u.image_url AS "imageUrl",
       COUNT(CASE WHEN f.user_id = $2 THEN 1 END) > 0 AS "isFollowing"
     FROM users u
-    LEFT JOIN followings f ON f.following_id = u.id
+    LEFT JOIN followings f ON f.followed_id = u.id
     WHERE u.id = $1
+    GROUP BY u.id;
   `;
+
   const response = await db.query(query, [otherUserId, userId]);
   return response.rows[0];
 }

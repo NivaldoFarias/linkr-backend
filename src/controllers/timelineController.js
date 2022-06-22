@@ -1,4 +1,5 @@
 import { postsRepository } from '../repositories/posts.js';
+import { API } from '../blueprints/chalk.js';
 
 export async function getTimelinePosts(req, res) {
   const { userId } = res.locals;
@@ -28,13 +29,22 @@ export async function getTimelinePosts(req, res) {
 
 
 export async function getTimelinePosts2(req, res) {
-  const { userId, beforeDate, afterDate } = res.locals;
+  const { userId, beforeDate, afterDate, limit } = res.locals;
+
   try {
-    const shares = await postsRepository.getTimelineShares(userId, beforeDate, afterDate);
+    const shares = await postsRepository.getTimelineShares(userId, beforeDate, afterDate, limit);
+    console.log(`shares: ${shares.length}`);
 
     // get unique posts from postId in shares
-    const uniquePostIds = shares.map((share) => share.postId);
+    const uniquePostIds = shares.reduce((acc, curr) => {
+      if (!acc.includes(curr.postId)) {
+        acc.push(curr.postId);
+      }
+      return acc;
+    }, []);
+
     const postsArray = await getPostArrayFromPostIds(uniquePostIds);
+    console.log(`postsArray: ${postsArray.length}`);
 
     // get unique users mixing: posts userId + post comments userId + shares userId
 
@@ -51,14 +61,17 @@ export async function getTimelinePosts2(req, res) {
     })
 
     const uniqueUserIdsArray = repeatedUserIdsArray.reduce((acc, curr) => {
-      if (!acc.some((user) => user.id === curr.id)) {
+      if (!acc.includes(curr)) {
         acc.push(curr);
       }
       return acc;
     }, []);
 
+    console.log(`unique users `, uniqueUserIdsArray);
+
     // get usersArray with id, username, imageUrl, isFollowing
-    const usersArray = await getUserArrayFromUserIds(uniqueUserIdsArray);
+    const usersArray = await getUserArrayFromUserIds(uniqueUserIdsArray, userId);
+    console.log(`usersArray: ${usersArray.length}`);
 
     // transform postsArray in posts (object based on postId)
     const posts = {};
@@ -79,6 +92,7 @@ export async function getTimelinePosts2(req, res) {
       users
     }
 
+    console.log(`${API} sucess. timeline sent!`);
     res.send(data);
 
   } catch (e) {
@@ -123,8 +137,8 @@ async function getPostArrayFromPostIds(postIds, userId) {
 
 async function getUserArrayFromUserIds(userIds, userId) {
   const usersArray = await Promise.all(
-    userIds.map(async (user) => {
-      const userData = await postsRepository.getOtherUserDataById(user.id, userId);
+    userIds.map(async (val) => {
+      const userData = await postsRepository.getUserDataById(val, userId);
       return userData;
     })
   );
@@ -134,16 +148,27 @@ async function getUserArrayFromUserIds(userIds, userId) {
 async function getLikesDataForPost(postId, userId) {
   const likes = await postsRepository.getPostLikes(postId);
   const totalLikes = likes.length;
+
+
   const likesFiltered = likes.filter((like) => like.userId !== userId);
   const usersWhoLiked =
     likesFiltered.length > 0
       ? likesFiltered.slice(0, likesFiltered.length > 2 ? 2 : likesFiltered.length)
       : [];
+
+
   let userHasLiked = false;
   for (const like of likes) {
-    if (like.userId === res.locals.userId) {
+    if (like.userId === userId) {
       userHasLiked = true;
     }
   }
-  return { userHasLiked, totalLikes, usersWhoLiked };
+
+  const likesData = {
+    totalLikes,
+    usersWhoLiked,
+    userHasLiked
+  }
+
+  return likesData;
 }

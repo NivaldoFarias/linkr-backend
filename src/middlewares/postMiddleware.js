@@ -106,3 +106,18 @@ export async function checkIfUserHasLikedPost(req, res, next) {
     next(e);
   }
 }
+
+
+export async function checkGetPostsQuery(req, res, next) {
+  // beforeDate, afterDate, limit
+  // validate FORMAT of beforeDate and afterDate. if invalid, save null to beforeDate and afterDate.
+
+  const { beforeDate, afterDate, limit } = req.query;
+
+  res.locals.beforeDate = beforeDate && beforeDate.match(/^\d{4}-\d{2}-\d{2}$/) ? beforeDate : null;
+  res.locals.afterDate = afterDate && afterDate.match(/^\d{4}-\d{2}-\d{2}$/) ? afterDate : null;
+  res.locals.limit = limit && limit.match(/^\d+$/) ? limit : 10;
+
+  console.log(chalk.magenta(`${MIDDLEWARE} query validated`));
+  next();
+}
