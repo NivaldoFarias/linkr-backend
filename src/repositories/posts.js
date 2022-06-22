@@ -184,7 +184,7 @@ async function getPostById(postId) {
 async function getPostComments(postId) {
   const query = `
     SELECT
-      c.user_id AS "userId", c.text, c.created_at AS "createdAt"
+      c.id, c.user_id AS "userId", c.text, c.created_at AS "createdAt"
     FROM comments c
     WHERE c.post_id = $1
   `;
