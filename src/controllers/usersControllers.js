@@ -51,10 +51,12 @@ export async function getUser(req, res, next) {
 export async function followUser(req, res, next) {
   const { followed_id } = req.params;
   const { userId, isFollowed } = res.locals;
+
+  console.log(isFollowed);
   
   try {
     const teste = userRepository.alterFollow(followed_id, userId, isFollowed);
-    res.status(200).json({teste});
+    res.status(200).json({isFollowed: !isFollowed});
   } catch (e) {
     next(e);
   }
