@@ -47,3 +47,15 @@ export async function getUser(req, res, next) {
     next(e);
   }
 }
+
+export async function followUser(req, res, next) {
+  const { followed_id } = req.params;
+  const { userId, isFollowed } = res.locals;
+  
+  try {
+    const teste = userRepository.alterFollow(followed_id, userId, isFollowed);
+    res.status(200).json({teste});
+  } catch (e) {
+    next(e);
+  }
+}
