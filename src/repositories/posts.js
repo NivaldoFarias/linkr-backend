@@ -150,6 +150,23 @@ async function deleteLikesByPostId(postId) {
   return response.rows[0];
 }
 
+/*
+
+  add those functions to the module:
+
+  [ ] getTimelineShares(userId, beforeDate, afterDate)
+  [ ] getPostById(postId)
+  [ ] getPostComments(postId)
+  [ ] getSharesInfo(postId, userId)
+  [ ] getOtherUserDataById(user.id, userId);
+  [ ] getPostLikes(postId);
+
+*/
+
+
+
+
+
 export const postsRepository = {
   getPostsByHashtagId,
   getPostsByUserId,
