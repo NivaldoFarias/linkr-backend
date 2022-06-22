@@ -110,14 +110,25 @@ export async function checkIfUserHasLikedPost(req, res, next) {
 
 export async function checkGetPostsQuery(req, res, next) {
   // beforeDate, afterDate, limit
+  // date format example: 2022-06-22T04:11:06.391Z => YYYY-MM-DDTHH:MM:SS.SSSZ
   // validate FORMAT of beforeDate and afterDate. if invalid, save null to beforeDate and afterDate.
 
   const { beforeDate, afterDate, limit } = req.query;
 
-  res.locals.beforeDate = beforeDate && beforeDate.match(/^\d{4}-\d{2}-\d{2}$/) ? beforeDate : null;
-  res.locals.afterDate = afterDate && afterDate.match(/^\d{4}-\d{2}-\d{2}$/) ? afterDate : null;
+  res.locals.beforeDate = validateDate(beforeDate);
+  res.locals.afterDate = validateDate(afterDate);
   res.locals.limit = limit && limit.match(/^\d+$/) ? limit : 10;
+
+  // console.log(res.locals);
 
   console.log(chalk.magenta(`${MIDDLEWARE} query validated`));
   next();
+}
+
+function validateDate(date) {
+  // YYYY-MM-DDTHH:MM:SS.SSSZ
+  if (date && date.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)) {
+    return date;
+  }
+  return null;
 }

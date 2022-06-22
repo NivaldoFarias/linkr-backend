@@ -154,23 +154,24 @@ async function deleteLikesByPostId(postId) {
 
 async function getTimelineShares(userId, beforeDate, afterDate, limit) {
 
-  // notes: 
-  // beforeDate and afterDate are strings in the format "YYYY-MM-DD" and are optional
+  // get shares from users that userId follows
+  // array of shares = {id, postId, userId, createdAt}
+  // beforeDate and afterDate are strings and are optional
   // limit is an integer and is optional
 
   const query = `
-    SELECT 
+    SELECT
       s.id, s.post_id AS "postId", s.user_id AS "userId", s.created_at AS "createdAt"
     FROM shares s
-    JOIN followings f ON f.user_id = s.user_id
-    WHERE f.user_id = $1
+    JOIN followings f ON f.followed_id = s.user_id
+    WHERE f.user_id = ${userId}
     ${beforeDate ? `AND s.created_at < '${beforeDate}'` : ''}
     ${afterDate ? `AND s.created_at > '${afterDate}'` : ''}
     ORDER BY s.created_at DESC
     ${limit ? `LIMIT ${limit}` : ''};
-  `;
-
-  const response = await db.query(query, [userId]);
+  `
+  console.log(query);
+  const response = await db.query(query);
   return response.rows;
 }
 
@@ -215,7 +216,7 @@ async function getSharesInfo(postId, userId) {
 
 async function getUserDataById(otherUserId, userId) {
   // id, username, imageUrl, isFollowing
-  console.log('aqui', userId, otherUserId);
+  // console.log('aqui', userId, otherUserId);
   const query = `
     SELECT
       u.id, u.username, u.image_url AS "imageUrl",
