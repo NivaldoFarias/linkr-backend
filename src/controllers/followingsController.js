@@ -4,25 +4,21 @@ import { followingsRepository } from '../repositories/followings.js';
 
 
 
-export async function followUser(req, res, next) {
+export async function followUser(req, res) {
   const { followed_id } = req.params;
   const { userId, isFollowed } = res.locals;
 
   if (isFollowed === true) {
     console.log(chalk.magenta(`${API} cannot follow user`));
     return res.sendStatus(401);
-  }
-
-  try {
+  } else {
     await followingsRepository.followUserById(followed_id, userId, isFollowed);
     console.log(chalk.magenta(`${API} followed user`));
-    res.status(200).json({ isFollowed: !isFollowed });
-  } catch (e) {
-    next(e);
+    res.status(200).send({ isFollowed: !isFollowed });
   }
 }
 
-export async function unfollowUser(req, res, next) {
+export async function unfollowUser(req, res) {
   const { followed_id } = req.params;
   const { userId, isFollowed } = res.locals;
 
@@ -30,13 +26,10 @@ export async function unfollowUser(req, res, next) {
     console.log(chalk.magenta(`${API} cannot unfollow user`));
     return res.sendStatus(401)
   }
-
-  try {
+  else {
     await followingsRepository.unfollowUserById(followed_id, userId);
     console.log(chalk.magenta(`${API} unfollowed user`));
-    res.status(200).json({ isFollowed: !isFollowed });
-  } catch (e) {
-    next(e);
+    return res.status(200).send({ isFollowed: !isFollowed });
   }
 }
 

@@ -31,13 +31,14 @@ async function findShareId(userId, postId) {
 
 async function getSharesInfo(postId, userId) {
     const query = `
-      SELECT
-        COUNT(*) AS "numberOfShares",
-        COUNT(CASE WHEN user_id = $2 THEN 1 END) > 0 AS "userHasShared"
-      FROM shares
-      WHERE post_id = $1
+        SELECT
+            COUNT(*) AS "numberOfShares",
+            COUNT(CASE WHEN user_id = $2 THEN 1 END) > 0 AS "userHasShared"
+        FROM shares
+        WHERE post_id = $1
     `;
     const response = await db.query(query, [postId, userId]);
+    response.rows[0].numberOfShares = parseInt(response.rows[0].numberOfShares) - 1;
     return response.rows[0];
 }
 

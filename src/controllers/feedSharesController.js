@@ -24,7 +24,7 @@ export async function getTimelineData(req, res) {
       return acc;
     }, []);
 
-    const postsArray = await getPostArrayFromPostIds(uniquePostIds);
+    const postsArray = await getPostArrayFromPostIds(uniquePostIds, userId);
     console.log(chalk.magenta(`${API} posts fetched`));
 
     const repeatedUserIdsArray = [];
@@ -46,6 +46,8 @@ export async function getTimelineData(req, res) {
       return acc;
     }, []);
 
+
+
     const usersArray = await getUserArrayFromUserIds(uniqueUserIdsArray, userId);
     console.log(chalk.magenta(`${API} users fetched`));
 
@@ -58,6 +60,7 @@ export async function getTimelineData(req, res) {
     usersArray.forEach((user) => {
       users[user.id] = user;
     });
+
 
     const data = {
       shares,
@@ -135,6 +138,7 @@ export async function getUserData(req, res) {
       }
       return acc;
     }, []);
+
 
     const usersArray = await getUserArrayFromUserIds(uniqueUserIdsArray, userId);
     console.log(chalk.magenta(`${API} users fetched`));
@@ -248,19 +252,14 @@ async function getLikesDataForPost(postId, userId) {
       ? likesFiltered.slice(0, likesFiltered.length > 2 ? 2 : likesFiltered.length)
       : [];
 
-
-  let userHasLiked = false;
-  for (const like of likes) {
-    if (like.userId === userId) {
-      userHasLiked = true;
-    }
-  }
+  const userHasLiked = likes.find((like) => like.userId === userId) ? true : false;
 
   const likesData = {
     totalLikes,
     usersWhoLiked,
     userHasLiked
   }
+
 
   return likesData;
 }

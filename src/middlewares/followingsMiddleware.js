@@ -12,13 +12,10 @@ export async function verifyIfUserIsFollowed(req, res, next) {
     if (followed !== null) {
       isFollowed = true;
     }
-    res.locals.isFollowed = isFollowed;
-    console.log(chalk.magenta(`${MIDDLEWARE} isFollowed: ${isFollowed}`));
-    next();
   } catch (e) {
     next(e);
   }
-
   res.locals.isFollowed = isFollowed;
+  console.log(chalk.magenta(`${MIDDLEWARE} isFollowed: ${isFollowed}`));
   next();
 }
