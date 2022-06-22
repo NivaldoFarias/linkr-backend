@@ -1,21 +1,51 @@
 import { sharesRepository } from "../repositories/shares.js";
+import { MIDDLEWARE, API } from "../blueprints/chalk.js";
+import chalk from "chalk";
 
-export async function Unshare(req,res,next) {
+
+export async function unsharePost(req, res, next) {
     try {
-        const {shareId} = req.params;
-        await sharesRepository.deleteShare(shareId);
-        res.sendStatus(200);
+        const { shareId } = res.locals;
+        if (shareId) {
+            await sharesRepository.deleteShare(shareId);
+            console.log(chalk.magenta(`${API} post unshared`));
+            res.sendStatus(200);
+        } else {
+            console.log(chalk.magenta(`${API} not unsharing`));
+            res.sendStatus(404);
+        }
     } catch (e) {
         next(e);
     }
 }
 
-export async function share(req,res,next) {
+export async function sharePost(req, res, next) {
     try {
-        const {userId} = res.locals;
-        const {postId} = req.params;
-        await sharesRepository.insertShare(userId, postId);
-        res.sendStatus(201);
+        const { userId, postId, shareId } = res.locals;
+        if (!shareId) {
+            await sharesRepository.insertShare(userId, postId);
+            console.log(chalk.magenta(`${API} post shared`));
+            res.sendStatus(201);
+        } else {
+            console.log(chalk.magenta(`${API} not sharing again`));
+            res.sendStatus(409);
+        }
+    } catch (e) {
+        next(e);
+    }
+}
+
+export async function shareNewPost(req, res, next) {
+    try {
+        const { userId, postId, shareId } = res.locals;
+        if (!shareId) {
+            await sharesRepository.insertShare(userId, postId);
+            console.log(chalk.magenta(`${API} new post shared`));
+            next();
+        } else {
+            console.log(chalk.magenta(`${API} share already exists`));
+            res.sendStatus(409);
+        }
     } catch (e) {
         next(e);
     }
