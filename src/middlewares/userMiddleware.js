@@ -10,6 +10,7 @@ export async function verifyIfUserIsFollowed(req, res, next) {
         if (followed !== null) {
             isFollowed = true;
         }
+
         res.locals.isFollowed = isFollowed;
         next();
     } catch (e) {

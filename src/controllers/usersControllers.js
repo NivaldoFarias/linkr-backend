@@ -52,12 +52,31 @@ export async function followUser(req, res, next) {
   const { followed_id } = req.params;
   const { userId, isFollowed } = res.locals;
 
-  console.log(isFollowed);
+  if (isFollowed === true) {
+    return res.sendStatus(401);
+  }
   
   try {
-    const teste = userRepository.alterFollow(followed_id, userId, isFollowed);
+    userRepository.followUserById(followed_id, userId, isFollowed);
     res.status(200).json({isFollowed: !isFollowed});
   } catch (e) {
     next(e);
   }
 }
+
+export async function unfollowUser(req, res, next) {
+  const { followed_id } = req.params;
+  const { userId, isFollowed } = res.locals;
+
+  if (followed_id === userId || !isFollowed) {
+    return res.sendStatus(401)
+  }
+  
+  try {
+    userRepository.unfollowUserById(followed_id, userId);
+    res.status(200).json({isFollowed: !isFollowed});
+  } catch (e) {
+    next(e);
+  }
+}
+

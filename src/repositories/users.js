@@ -33,24 +33,32 @@ const getUserByUsername = async (username) => {
 
 const getFollowing = async (userId, followedId) => {
   const searchQuery = `
-    SELECT id 
+    SELECT id
     FROM followings 
-    WHERE user_id = $1 AND follower_id = $2;
+    WHERE user_id = $1 AND followed_id = $2;
   `
-  const result = await db.query(searchQuery, [userId, followedId]);
+  const result = await db.query(searchQuery, [followedId, userId]);
   return result.rows[0] ?? null;
 }
 
-const alterFollow = async (userId, followedId, isFollowed) => {
+const followUserById = async (userId, followedId) => {
+  console.log(userId, followedId);
   const insertQuery = `
-    INSERT INTO followings (user_id, follower_id)
+    INSERT INTO followings (user_id, followed_id)
     VALUES ($1, $2);
   `;
+
+  const result = await db.query(insertQuery, [followedId, userId]);
+  return result.rows[0] ?? null;
+}
+
+const unfollowUserById = async (userId, followedId) => {
   const deleteQuery = `
     DELETE FROM followings 
-    WHERE user_id = $1 AND follower_id = $2
+    WHERE user_id = $1 AND followed_id = $2
   `;
-  const result = await db.query(isFollowed ? deleteQuery : insertQuery, [userId, followedId]);
+
+  const result = await db.query(deleteQuery, [followedId, userId]);
   return result.rows[0] ?? null;
 }
 
@@ -59,5 +67,6 @@ export const userRepository = {
   getUserByUsername,
   getUserById,
   getFollowing,
-  alterFollow
+  followUserById,
+  unfollowUserById
 };
