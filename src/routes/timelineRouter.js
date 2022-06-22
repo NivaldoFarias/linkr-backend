@@ -6,6 +6,6 @@ import requireToken from '../middlewares/requireToken.js';
 
 const timelineRouter = Router();
 
-timelineRouter.get('/', logThis('Get user timeline'), requireToken, getTimelinePosts);
+timelineRouter.get('/posts', logThis('Get user timeline'), requireToken, getTimelinePosts);
 
 export default timelineRouter;
