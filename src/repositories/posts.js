@@ -85,7 +85,6 @@ async function userIdHasLikedPost(userId, postId) {
 
 async function likePost(userId, postId) {
   const query = `INSERT INTO likes (user_id, post_id) VALUES ($1, $2)`;
-  console.log(query, [userId, postId]);
   const response = await db.query(query, [userId, postId]);
   return response.rows[0];
 }
@@ -150,6 +149,89 @@ async function deleteLikesByPostId(postId) {
   return response.rows[0];
 }
 
+
+
+async function getTimelineShares(userId, beforeDate, afterDate, limit) {
+
+  const query = `
+    SELECT
+      s.id, s.post_id AS "postId", s.user_id AS "userId", s.created_at AS "createdAt"
+    FROM shares s
+    JOIN followings f ON f.followed_id = s.user_id
+    WHERE f.user_id = ${userId}
+    ${beforeDate ? `AND s.created_at < '${beforeDate}'` : ''}
+    ${afterDate ? `AND s.created_at > '${afterDate}'` : ''}
+    ORDER BY s.created_at DESC
+    ${limit ? `LIMIT ${limit}` : ''};
+  `
+  const response = await db.query(query);
+  return response.rows;
+}
+
+async function getPostById(postId) {
+  const query = `
+    SELECT
+      p.id, p.created_at AS "createdAt", p.user_id AS "userId", p.text,
+      ur.url, ur.image_url AS image, ur.title, ur.description
+    FROM posts p
+    JOIN urls ur ON p.url_id = ur.id
+    WHERE p.id = $1
+  `;
+  const response = await db.query(query, [postId]);
+  return response.rows[0];
+}
+
+async function getPostComments(postId) {
+  const query = `
+    SELECT
+      c.id, c.user_id AS "userId", c.text, c.created_at AS "createdAt"
+    FROM comments c
+    WHERE c.post_id = $1
+  `;
+  const response = await db.query(query, [postId]);
+  return response.rows;
+}
+
+async function getSharesInfo(postId, userId) {
+  const query = `
+    SELECT
+      COUNT(*) AS "numberOfShares",
+      COUNT(CASE WHEN user_id = $2 THEN 1 END) > 0 AS "userHasShared"
+    FROM shares
+    WHERE post_id = $1
+  `;
+  const response = await db.query(query, [postId, userId]);
+  return response.rows[0];
+}
+
+async function getUserDataById(otherUserId, userId) {
+  const query = `
+    SELECT
+      u.id, u.username, u.image_url AS "imageUrl",
+      COUNT(CASE WHEN f.user_id = $2 THEN 1 END) > 0 AS "isFollowing"
+    FROM users u
+    LEFT JOIN followings f ON f.followed_id = u.id
+    WHERE u.id = $1
+    GROUP BY u.id;
+  `;
+
+  const response = await db.query(query, [otherUserId, userId]);
+  return response.rows[0];
+}
+
+async function checkTimelineShares(userId, operand, date) {
+  const query = `
+    SELECT
+      COUNT(*) AS "numberOfShares"
+    FROM shares s
+    JOIN followings f ON f.followed_id = s.user_id
+    WHERE f.user_id = ${userId}
+    ${operand ? `AND s.created_at ${operand} '${date}'` : ''}
+  `;
+  const response = await db.query(query);
+  return response.rows[0].numberOfShares || 0;
+}
+
 export const postsRepository = {
   getPostsByHashtagId,
   getPostsByUserId,
@@ -165,4 +247,11 @@ export const postsRepository = {
   deleteHastagsPostsByPostId,
   deleteLikesByPostId,
   updatePost,
+
+  getTimelineShares,
+  getPostById,
+  getPostComments,
+  getSharesInfo,
+  getUserDataById,
+  checkTimelineShares
 };
