@@ -6,9 +6,13 @@ import requireToken from '../middlewares/requireToken.js';
 
 const router = Router();
 
-
-
 router.get('/trending', logThis('Get trending hashtags'), getTrendingHashtags);
-router.get('/:hashtag/posts', logThis('Get hashtags posts'), requireToken, validateHashtag, getHashtagPosts);
+router.get(
+  '/:hashtag/posts',
+  logThis('Get hashtags posts'),
+  requireToken,
+  validateHashtag,
+  getHashtagPosts,
+);
 
 export default router;

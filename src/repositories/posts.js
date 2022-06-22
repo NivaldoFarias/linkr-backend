@@ -149,10 +149,7 @@ async function deleteLikesByPostId(postId) {
   return response.rows[0];
 }
 
-
-
 async function getTimelineShares(userId, beforeDate, afterDate, limit) {
-
   const query = `
     SELECT
       s.id, s.post_id AS "postId", s.user_id AS "userId", s.created_at AS "createdAt"
@@ -163,7 +160,7 @@ async function getTimelineShares(userId, beforeDate, afterDate, limit) {
     ${afterDate ? `AND s.created_at > '${afterDate}'` : ''}
     ORDER BY s.created_at DESC
     ${limit ? `LIMIT ${limit}` : ''};
-  `
+  `;
   const response = await db.query(query);
   return response.rows;
 }
@@ -253,5 +250,5 @@ export const postsRepository = {
   getPostComments,
   getSharesInfo,
   getUserDataById,
-  checkTimelineShares
+  checkTimelineShares,
 };

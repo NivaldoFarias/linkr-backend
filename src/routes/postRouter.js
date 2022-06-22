@@ -24,7 +24,6 @@ import requireToken from '../middlewares/requireToken.js';
 import { validateSchema } from '../middlewares/schemaValidator.js';
 import postSchema from '../schemas/postSchema.js';
 
-
 const postRouter = Router();
 
 // POST
@@ -39,37 +38,58 @@ postRouter
     findUrl,
     createUrl,
     createPost,
-    saveHashtags
+    saveHashtags,
   );
 
 // GET, PUT, DELETE
 
-postRouter.route('/:postId').get(logThis('Get post by id'), requireToken, validateUserId, validatePostId, getPost);
+postRouter
+  .route('/:postId')
+  .get(logThis('Get post by id'), requireToken, validateUserId, validatePostId, getPost);
 
 postRouter
   .route('/:postId')
-  .put(logThis('Edit post'), requireToken, validateUserId, validatePostId, validatePostText, updatePost);
+  .put(
+    logThis('Edit post'),
+    requireToken,
+    validateUserId,
+    validatePostId,
+    validatePostText,
+    updatePost,
+  );
 
-postRouter.route('/:postId').delete(logThis('Delete post'), requireToken, validateUserId, validatePostId, deletePost);
+postRouter
+  .route('/:postId')
+  .delete(logThis('Delete post'), requireToken, validateUserId, validatePostId, deletePost);
 
 // LIKE-UNLIKE
 
 postRouter
   .route('/:postId/like')
-  .post(logThis('Like post'), requireToken, validateUserId, validatePostId, checkIfUserHasLikedPost, likePost);
+  .post(
+    logThis('Like post'),
+    requireToken,
+    validateUserId,
+    validatePostId,
+    checkIfUserHasLikedPost,
+    likePost,
+  );
 
 postRouter
   .route('/:postId/unlike')
-  .post(logThis('Unlike post'), requireToken, validateUserId, validatePostId, checkIfUserHasLikedPost, unlikePost);
+  .post(
+    logThis('Unlike post'),
+    requireToken,
+    validateUserId,
+    validatePostId,
+    checkIfUserHasLikedPost,
+    unlikePost,
+  );
 
 // COMMENTS
 
-postRouter.route('/:postId/comment')
-  .post(
-    requireToken,
-    validatePostId,
-    validateCommentText,
-    createNewComment
-  );
+postRouter
+  .route('/:postId/comment')
+  .post(requireToken, validatePostId, validateCommentText, createNewComment);
 
 export default postRouter;

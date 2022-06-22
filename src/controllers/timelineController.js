@@ -2,7 +2,6 @@ import { postsRepository } from '../repositories/posts.js';
 import { API } from '../blueprints/chalk.js';
 import chalk from 'chalk';
 
-
 export async function getTimelineData(req, res) {
   const { userId, beforeDate, afterDate, limit } = res.locals;
 
@@ -30,7 +29,7 @@ export async function getTimelineData(req, res) {
     });
     shares.forEach((share) => {
       repeatedUserIdsArray.push(share.userId);
-    })
+    });
 
     const uniqueUserIdsArray = repeatedUserIdsArray.reduce((acc, curr) => {
       if (!acc.includes(curr)) {
@@ -55,12 +54,11 @@ export async function getTimelineData(req, res) {
     const data = {
       shares,
       posts,
-      users
-    }
+      users,
+    };
 
     console.log(chalk.magenta(`${API} data fetched`));
     res.send(data);
-
   } catch (e) {
     res.status(500).send({ error: e });
   }
@@ -80,7 +78,7 @@ export async function checkTimelineShares(req, res) {
       postsBeforeDate,
       afterDate,
       postsAfterDate,
-    }
+    };
 
     console.log(chalk.magenta(`${API} timeline shares checked`));
     res.send(data);
@@ -88,11 +86,6 @@ export async function checkTimelineShares(req, res) {
     res.status(500).send({ error: e });
   }
 }
-
-
-
-
-
 
 // ============================================================
 
@@ -109,8 +102,8 @@ async function getPost(postId, userId) {
     url: { url: post.url, title: post.title, description: post.description, imageUrl: post.image },
     likes,
     comments,
-    shares
-  }
+    shares,
+  };
   return newPost;
 }
 
@@ -119,8 +112,7 @@ async function getPostArrayFromPostIds(postIds, userId) {
     postIds.map(async (postId) => {
       const post = await getPost(postId, userId);
       return post;
-    }
-    )
+    }),
   );
   return postsArray;
 }
@@ -130,7 +122,7 @@ async function getUserArrayFromUserIds(userIds, userId) {
     userIds.map(async (val) => {
       const userData = await postsRepository.getUserDataById(val, userId);
       return userData;
-    })
+    }),
   );
   return usersArray;
 }
@@ -139,13 +131,11 @@ async function getLikesDataForPost(postId, userId) {
   const likes = await postsRepository.getPostLikes(postId);
   const totalLikes = likes.length;
 
-
   const likesFiltered = likes.filter((like) => like.userId !== userId);
   const usersWhoLiked =
     likesFiltered.length > 0
       ? likesFiltered.slice(0, likesFiltered.length > 2 ? 2 : likesFiltered.length)
       : [];
-
 
   let userHasLiked = false;
   for (const like of likes) {
@@ -157,8 +147,8 @@ async function getLikesDataForPost(postId, userId) {
   const likesData = {
     totalLikes,
     usersWhoLiked,
-    userHasLiked
-  }
+    userHasLiked,
+  };
 
   return likesData;
 }

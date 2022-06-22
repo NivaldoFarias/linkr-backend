@@ -40,8 +40,7 @@ export async function saveHashtags(req, res, next) {
     } catch (e) {
       next(e);
     }
-  }
-  else {
+  } else {
     console.log(chalk.magenta(`${MIDDLEWARE} no hashtags found`));
     res.sendStatus(201);
   }

@@ -5,10 +5,23 @@ import { validateUserId } from '../middlewares/authMiddleware.js';
 import { checkGetPostsQuery, checkCheckPostsQuery } from '../middlewares/postMiddleware.js';
 import requireToken from '../middlewares/requireToken.js';
 
-
 const timelineRouter = Router();
 
-timelineRouter.get('/posts', logThis('Get user timeline'), requireToken, validateUserId, checkGetPostsQuery, getTimelineData);
-timelineRouter.get('/posts/check', logThis('Check timeline'), requireToken, validateUserId, checkCheckPostsQuery, checkTimelineShares);
+timelineRouter.get(
+  '/posts',
+  logThis('Get user timeline'),
+  requireToken,
+  validateUserId,
+  checkGetPostsQuery,
+  getTimelineData,
+);
+timelineRouter.get(
+  '/posts/check',
+  logThis('Check timeline'),
+  requireToken,
+  validateUserId,
+  checkCheckPostsQuery,
+  checkTimelineShares,
+);
 
 export default timelineRouter;

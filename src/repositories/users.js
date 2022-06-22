@@ -36,10 +36,10 @@ const getFollowing = async (userId, followedId) => {
     SELECT id
     FROM followings 
     WHERE user_id = $1 AND followed_id = $2;
-  `
+  `;
   const result = await db.query(searchQuery, [followedId, userId]);
   return result.rows[0] ?? null;
-}
+};
 
 const followUserById = async (userId, followedId) => {
   console.log(userId, followedId);
@@ -50,7 +50,7 @@ const followUserById = async (userId, followedId) => {
 
   const result = await db.query(insertQuery, [followedId, userId]);
   return result.rows[0] ?? null;
-}
+};
 
 const unfollowUserById = async (userId, followedId) => {
   const deleteQuery = `
@@ -60,7 +60,7 @@ const unfollowUserById = async (userId, followedId) => {
 
   const result = await db.query(deleteQuery, [followedId, userId]);
   return result.rows[0] ?? null;
-}
+};
 
 export const userRepository = {
   getUsersByUserName,
@@ -68,5 +68,5 @@ export const userRepository = {
   getUserById,
   getFollowing,
   followUserById,
-  unfollowUserById
+  unfollowUserById,
 };

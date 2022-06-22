@@ -1,14 +1,14 @@
-import { commentsRepository } from "../repositories/comments.js";
+import { commentsRepository } from '../repositories/comments.js';
 
 export async function createNewComment(req, res) {
-    const { userId, postId, text } = res.locals
+  const { userId, postId, text } = res.locals;
 
-    try {
-        await commentsRepository.createNewComment(userId, postId, text)
-        console.log(chalk.magenta(`${MIDDLEWARE} comment created`));
-        res.sendStatus(201);
-    } catch (error) {
-        console.log(chalk.red(`${MIDDLEWARE} something went wrong creating comment`));
-        res.sendStatus(500);
-    }
+  try {
+    await commentsRepository.createNewComment(userId, postId, text);
+    console.log(chalk.magenta(`${MIDDLEWARE} comment created`));
+    res.sendStatus(201);
+  } catch (error) {
+    console.log(chalk.red(`${MIDDLEWARE} something went wrong creating comment`));
+    res.sendStatus(500);
+  }
 }

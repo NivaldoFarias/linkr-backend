@@ -25,13 +25,15 @@ export async function createUrl(req, res, next) {
     console.log(chalk.magenta(`creating url...`));
     const url = { url: req.body.url, title: '', description: '', imageUrl: '' };
     try {
-      const promise = await urlMetadata(url.url).then((metadata) => {
-        url.title = metadata.title;
-        url.description = metadata.description;
-        url.imageUrl = metadata.image;
-      }).catch((e) => {
-        console.log(chalk.red(`${MIDDLEWARE} error getting url metadata: ${e}`))
-      });
+      const promise = await urlMetadata(url.url)
+        .then((metadata) => {
+          url.title = metadata.title;
+          url.description = metadata.description;
+          url.imageUrl = metadata.image;
+        })
+        .catch((e) => {
+          console.log(chalk.red(`${MIDDLEWARE} error getting url metadata: ${e}`));
+        });
       const newUrl = await urlsRepository.createUrl(
         url.url,
         url.title,
@@ -106,9 +108,7 @@ export async function checkIfUserHasLikedPost(req, res, next) {
   }
 }
 
-
 export function checkGetPostsQuery(req, res, next) {
-
   const { beforeDate, afterDate, limit } = req.query;
 
   res.locals.beforeDate = validateDate(beforeDate);
@@ -128,13 +128,11 @@ export function checkCheckPostsQuery(req, res, next) {
   if (res.locals.beforeDate || res.locals.afterDate) {
     console.log(chalk.magenta(`${MIDDLEWARE} query validated`));
     next();
-  }
-  else {
+  } else {
     console.log(chalk.magenta(`${MIDDLEWARE} query not validated`));
     res.sendStatus(400);
   }
 }
-
 
 function validateDate(date) {
   if (date && date.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)) {
