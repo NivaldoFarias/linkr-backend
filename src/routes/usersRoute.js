@@ -14,5 +14,5 @@ usersRoute.route('/').get(logThis('Get user'), requireToken, getUser);
 usersRoute.route('/username/:username').get(logThis('Find users'), requireToken, usersByUserName);
 
 usersRoute.get('/:userId/posts', logThis('Get user shares'), requireToken, validateUserId, validateVisitedUserId, checkGetSharesQuery, getUserData);
-usersRoute.get('/:userId/check', logThis('Check user feed'), requireToken, validateUserId, validateVisitedUserId, checkCheckSharesQuery, checkUserShares);
+usersRoute.get('/:userId/posts/check', logThis('Check user feed'), requireToken, validateUserId, validateVisitedUserId, checkCheckSharesQuery, checkUserShares);
 export default usersRoute;
