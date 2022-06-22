@@ -150,6 +150,29 @@ async function deleteLikesByPostId(postId) {
   return response.rows[0];
 }
 
+async function getRecentPosts(date) {
+  const query = `
+    SELECT created_at as "createdAt", text, id, user_id as "userId", url_id as "urlId"
+    FROM posts
+    WHERE created_at > $1
+    ORDER BY DESC;
+  `;
+  const response = await db.query(query, [date]);
+  return response.rows;
+}
+
+async function getLastPosts(date) {
+  const query = `
+    SELECT created_at as "createdAt", text, id, user_id as "userId", url_id as "urlId"
+    FROM posts
+    WHERE created_at < $1
+    ORDER BY created_at DESC
+    LIMIT 10;
+  `;
+  const response = await db.query(query, [date]);
+  return response.rows;
+}
+
 export const postsRepository = {
   getPostsByHashtagId,
   getPostsByUserId,
@@ -165,4 +188,6 @@ export const postsRepository = {
   deleteHastagsPostsByPostId,
   deleteLikesByPostId,
   updatePost,
+  getRecentPosts,
+  getLastPosts,
 };

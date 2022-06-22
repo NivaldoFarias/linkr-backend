@@ -9,5 +9,4 @@ const usersRoute = Router();
 usersRoute.route('/').get(logThis('Get user'), requireToken, getUser);
 usersRoute.route('/username/:username').get(logThis('Find users'), requireToken, usersByUserName);
 usersRoute.route('/:userId/posts').get(logThis('Get user posts'), requireToken, usersPosts);
-
 export default usersRoute;

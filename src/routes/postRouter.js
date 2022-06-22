@@ -7,6 +7,7 @@ import {
   getPost,
   updatePost,
   deletePost,
+  checkPosts,
 } from '../controllers/postController.js';
 import { validateUserId } from '../middlewares/authMiddleware.js';
 
@@ -54,4 +55,7 @@ postRouter
   .route('/:postId/unlike')
   .post(logThis('Unlike post'), requireToken, validateUserId, validatePostId, checkIfUserHasLikedPost, unlikePost);
 
+postRouter
+  .route('/check')
+  .get(logThis('Check posts'), requireToken, validateUserId, checkPosts);
 export default postRouter;

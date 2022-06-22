@@ -157,3 +157,18 @@ export async function getPost(_req, res) {
     res.status(500).send({ error: e });
   }
 }
+
+export async function checkPosts(req,res) {
+  try {
+    const { newDate, oldDate } = req.query;
+    const recentPosts = await postsRepository.getRecentPosts(newDate);
+    const lastPosts = await postsRepository.getLastPosts(oldDate);
+    const numberOfPostsAfterLastDate = lastPosts.length;
+    const lastDate = lastPosts[numberOfPostsAfterLastDate-1].createdAt
+    const numberOfPostsBeforeFirstDate = recentPosts.length;
+    const firstDate = recentPosts[0].createdAt;
+    res.status(200).send({firstDate,numberOfPostsBeforeFirstDate,lastDate,numberOfPostsAfterLastDate})
+  } catch (e) {
+    next(e);
+  }
+}
