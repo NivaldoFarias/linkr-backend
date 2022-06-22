@@ -31,10 +31,20 @@ const unfollowUserById = async (userId, followedId) => {
     return result.rows[0] ?? null;
 }
 
-
+async function getUserFollowData(userId) {
+    const searchQuery = `
+        SELECT 
+            COUNT(CASE WHEN f.user_id = $1 THEN 1 END) - 1 AS "numberOfFollowings",
+            COUNT(CASE WHEN f.followed_id = $1 THEN 1 END) - 1 AS "numberOfFollowers"
+        FROM followings f;
+    `;
+    const result = await db.query(searchQuery, [userId]);
+    return result.rows[0] ?? null;
+}
 
 export const followingsRepository = {
     getFollowing,
     followUserById,
-    unfollowUserById
+    unfollowUserById,
+    getUserFollowData
 };

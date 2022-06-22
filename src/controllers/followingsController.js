@@ -33,3 +33,10 @@ export async function unfollowUser(req, res) {
   }
 }
 
+export async function getUserFollowData(req, res) {
+  const { visitedUserId } = res.locals;
+  const userFollowData = await followingsRepository.getUserFollowData(visitedUserId);
+  userFollowData.userId = visitedUserId;
+  console.log(chalk.magenta(`${API} user follow data`));
+  return res.status(200).send(userFollowData);
+}
