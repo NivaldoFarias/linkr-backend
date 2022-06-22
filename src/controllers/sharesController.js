@@ -1,6 +1,6 @@
-import { sharesRepository } from "../repositories/shares.js";
 import { MIDDLEWARE, API } from "../blueprints/chalk.js";
 import chalk from "chalk";
+import { sharesRepository } from "../repositories/shares.js";
 
 
 export async function unsharePost(req, res, next) {

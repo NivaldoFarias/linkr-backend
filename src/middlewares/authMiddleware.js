@@ -7,7 +7,6 @@ import chalk from 'chalk';
 import CustomError from '../util/CustomError.js';
 import { MIDDLEWARE } from '../blueprints/chalk.js';
 import { SignInSchema, SignUpSchema } from '../models/authModel.js';
-import db from '../database/index.js';
 import { userRepository } from '../repositories/users.js';
 
 async function validateSignUp(req, res, next) {
@@ -90,49 +89,6 @@ async function usernameIsUnique(_req, res, next) {
   }
 }
 
-async function findUser(req, res, next) {
-  try {
-    const username = stripHtml(req.body.username).result.trim();
-
-    const user = await userRepository.getUserByUsername(username);
-
-    if (!user) {
-      throw new CustomError(
-        404,
-        'User not found',
-        'Ensure to provide a valid username corresponding to a registered user',
-      );
-    }
-
-    res.locals.user = user;
-    console.log(chalk.magenta(`${MIDDLEWARE} User found`));
-    next();
-  } catch (e) {
-    next(e);
-  }
-}
-
-async function validateUserId(req, res, next) {
-  try {
-    const { userId } = res.locals;
-
-    const user = await userRepository.getUserById(userId);
-
-    if (!user) {
-      throw new CustomError(
-        404,
-        'User not found',
-        'Ensure to provide a valid username corresponding to a registered user',
-      );
-    }
-    res.locals.user = user;
-    console.log(chalk.magenta(`${MIDDLEWARE} User found`));
-    next();
-  } catch (e) {
-    next(e);
-  }
-}
-
 async function validatePassword(req, res, next) {
   try {
     const password = req.body.password;
@@ -153,7 +109,5 @@ export {
   validateSignUp,
   validateSignIn,
   usernameIsUnique,
-  findUser,
   validatePassword,
-  validateUserId,
 };

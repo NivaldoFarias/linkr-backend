@@ -49,16 +49,7 @@ async function getTimelinePosts() {
   return response.rows;
 }
 
-async function getPostLikes(postId) {
-  const query = `
-    SELECT u.id as "userId", u.username
-    FROM likes l
-    JOIN users u ON u.id = l.user_id
-    WHERE post_id = $1;
-  `;
-  const response = await db.query(query, [postId]);
-  return response.rows;
-}
+
 
 async function insertPost(text, urlId, userId) {
   const query = `
@@ -76,24 +67,6 @@ async function findPostById(postId) {
   return response.rows[0];
 }
 
-async function userIdHasLikedPost(userId, postId) {
-  const query = `SELECT * FROM likes WHERE user_id = $1 AND post_id = $2`;
-  const response = await db.query(query, [userId, postId]);
-  const hasLiked = response.rows.length > 0 ?? false;
-  return hasLiked;
-}
-
-async function likePost(userId, postId) {
-  const query = `INSERT INTO likes (user_id, post_id) VALUES ($1, $2)`;
-  const response = await db.query(query, [userId, postId]);
-  return response.rows[0];
-}
-
-async function unlikePost(userId, postId) {
-  const query = `DELETE FROM likes WHERE user_id = $1 AND post_id = $2`;
-  const response = await db.query(query, [userId, postId]);
-  return response.rows[0];
-}
 
 async function getPost(postId) {
   const query = `
@@ -131,65 +104,6 @@ async function deletePostById(postId, userId) {
   return response.rows[0];
 }
 
-async function deleteHastagsPostsByPostId(postId) {
-  const query = `
-    DELETE FROM hashtags_posts 
-    WHERE post_id=$1
-  `;
-  const response = await db.query(query, [postId]);
-  return response.rows[0];
-}
-
-async function deleteLikesByPostId(postId) {
-  const query = `
-    DELETE FROM likes
-    WHERE post_id=$1
-  `;
-  const response = await db.query(query, [postId]);
-  return response.rows[0];
-}
-
-async function getRecentPosts(date) {
-  const query = `
-    SELECT created_at as "createdAt", text, id, user_id as "userId", url_id as "urlId"
-    FROM posts
-    WHERE created_at > $1
-    ORDER BY DESC;
-  `;
-  const response = await db.query(query, [date]);
-  return response.rows;
-}
-
-async function getLastPosts(date) {
-  const query = `
-    SELECT created_at as "createdAt", text, id, user_id as "userId", url_id as "urlId"
-    FROM posts
-    WHERE created_at < $1
-    ORDER BY created_at DESC
-    LIMIT 10;
-  `;
-  const response = await db.query(query, [date]);
-  return response.rows;
-}
-
-
-
-async function getTimelineShares(userId, beforeDate, afterDate, limit) {
-
-  const query = `
-    SELECT
-      s.id, s.post_id AS "postId", s.user_id AS "userId", s.created_at AS "createdAt"
-    FROM shares s
-    JOIN followings f ON f.followed_id = s.user_id
-    WHERE f.user_id = ${userId}
-    ${beforeDate ? `AND s.created_at < '${beforeDate}'` : ''}
-    ${afterDate ? `AND s.created_at > '${afterDate}'` : ''}
-    ORDER BY s.created_at DESC
-    ${limit ? `LIMIT ${limit}` : ''};
-  `
-  const response = await db.query(query);
-  return response.rows;
-}
 
 async function getPostById(postId) {
   const query = `
@@ -204,79 +118,16 @@ async function getPostById(postId) {
   return response.rows[0];
 }
 
-async function getPostComments(postId) {
-  const query = `
-    SELECT
-      c.id, c.user_id AS "userId", c.text, c.created_at AS "createdAt"
-    FROM comments c
-    WHERE c.post_id = $1
-  `;
-  const response = await db.query(query, [postId]);
-  return response.rows;
-}
 
-async function getSharesInfo(postId, userId) {
-  const query = `
-    SELECT
-      COUNT(*) AS "numberOfShares",
-      COUNT(CASE WHEN user_id = $2 THEN 1 END) > 0 AS "userHasShared"
-    FROM shares
-    WHERE post_id = $1
-  `;
-  const response = await db.query(query, [postId, userId]);
-  return response.rows[0];
-}
-
-async function getUserDataById(otherUserId, userId) {
-  const query = `
-    SELECT
-      u.id, u.username, u.image_url AS "imageUrl",
-      COUNT(CASE WHEN f.user_id = $2 THEN 1 END) > 0 AS "isFollowing"
-    FROM users u
-    LEFT JOIN followings f ON f.followed_id = u.id
-    WHERE u.id = $1
-    GROUP BY u.id;
-  `;
-
-  const response = await db.query(query, [otherUserId, userId]);
-  return response.rows[0];
-}
-
-async function checkTimelineShares(userId, operand, date) {
-  const query = `
-    SELECT
-      COUNT(*) AS "numberOfShares"
-    FROM shares s
-    JOIN followings f ON f.followed_id = s.user_id
-    WHERE f.user_id = ${userId}
-    ${operand ? `AND s.created_at ${operand} '${date}'` : ''}
-  `;
-  const response = await db.query(query);
-  return response.rows[0].numberOfShares || 0;
-}
 
 export const postsRepository = {
+  insertPost,
+  updatePost,
+  findPostById,
   getPostsByHashtagId,
   getPostsByUserId,
-  insertPost,
   getTimelinePosts,
-  findPostById,
-  userIdHasLikedPost,
-  likePost,
-  unlikePost,
-  getPostLikes,
   getPost,
   deletePostById,
-  deleteHastagsPostsByPostId,
-  deleteLikesByPostId,
-  updatePost,
-  getRecentPosts,
-  getLastPosts,
-
-  getTimelineShares,
-  getPostById,
-  getPostComments,
-  getSharesInfo,
-  getUserDataById,
-  checkTimelineShares
+  getPostById
 };

@@ -31,8 +31,24 @@ const getUserByUsername = async (username) => {
   return result.rows[0] ?? null;
 };
 
+async function getUserDataById(otherUserId, userId) {
+  const query = `
+    SELECT
+      u.id, u.username, u.image_url AS "imageUrl",
+      COUNT(CASE WHEN f.user_id = $2 THEN 1 END) > 0 AS "isFollowing"
+    FROM users u
+    LEFT JOIN followings f ON f.followed_id = u.id
+    WHERE u.id = $1
+    GROUP BY u.id;
+  `;
+
+  const response = await db.query(query, [otherUserId, userId]);
+  return response.rows[0];
+}
+
 export const userRepository = {
   getUsersByUserName,
   getUserByUsername,
   getUserById,
+  getUserDataById
 };

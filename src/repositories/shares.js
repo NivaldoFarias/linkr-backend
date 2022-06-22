@@ -29,8 +29,23 @@ async function findShareId(userId, postId) {
     return response.rows[0] ? response.rows[0].id : null;
 }
 
+async function getSharesInfo(postId, userId) {
+    const query = `
+      SELECT
+        COUNT(*) AS "numberOfShares",
+        COUNT(CASE WHEN user_id = $2 THEN 1 END) > 0 AS "userHasShared"
+      FROM shares
+      WHERE post_id = $1
+    `;
+    const response = await db.query(query, [postId, userId]);
+    return response.rows[0];
+}
+
+
+
 export const sharesRepository = {
     insertShare,
     deleteShare,
-    findShareId
+    findShareId,
+    getSharesInfo,
 };

@@ -1,3 +1,5 @@
+import chalk from "chalk";
+import { MIDDLEWARE } from "../blueprints/chalk.js";
 import { commentsRepository } from "../repositories/comments.js";
 
 export async function createNewComment(req, res) {

@@ -1,14 +1,13 @@
 import { Router } from 'express';
 import logThis from '../blueprints/logThis.js';
-import { getTimelineData, checkTimelineShares } from '../controllers/timelineController.js';
-import { validateUserId } from '../middlewares/authMiddleware.js';
-import { checkGetPostsQuery, checkCheckPostsQuery } from '../middlewares/postMiddleware.js';
 import requireToken from '../middlewares/requireToken.js';
-
+import { validateUserId } from '../middlewares/usersMiddleware.js';
+import { checkGetSharesQuery, checkCheckSharesQuery } from '../middlewares/sharesMiddleware.js';
+import { getTimelineData, checkTimelineShares } from '../controllers/feedSharesController.js';
 
 const timelineRouter = Router();
 
-timelineRouter.get('/posts', logThis('Get user timeline'), requireToken, validateUserId, checkGetPostsQuery, getTimelineData);
-timelineRouter.get('/posts/check', logThis('Check timeline'), requireToken, validateUserId, checkCheckPostsQuery, checkTimelineShares);
+timelineRouter.get('/posts', logThis('Get user timeline'), requireToken, validateUserId, checkGetSharesQuery, getTimelineData);
+timelineRouter.get('/posts/check', logThis('Check timeline'), requireToken, validateUserId, checkCheckSharesQuery, checkTimelineShares);
 
 export default timelineRouter;

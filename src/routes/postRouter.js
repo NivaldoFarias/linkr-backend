@@ -1,24 +1,22 @@
 import { Router } from 'express';
 import logThis from '../blueprints/logThis.js';
-import { createNewComment } from '../controllers/commentsController.js';
-import {
-  likePost,
-  saveHashtags,
-  unlikePost,
-  getPost,
-  updatePost,
-  deletePost,
-  checkPosts,
-} from '../controllers/postController.js';
-import { validateUserId } from '../middlewares/authMiddleware.js';
+import requireToken from '../middlewares/requireToken.js';
+import { validateUserId } from '../middlewares/usersMiddleware.js';
+
+import { validateSchema } from '../middlewares/schemaValidator.js';
+import postSchema from '../schemas/postSchema.js';
+import { validatePostId, validatePostText, createPost } from '../middlewares/postsMiddleware.js';
+import { getPost, updatePost, deletePost } from '../controllers/postsController.js';
+import { findUrl, createUrl } from '../middlewares/urlsMiddleware.js';
+import { saveHashtags } from '../controllers/hashtagsController.js';
+
+import { checkIfUserHasLikedPost } from '../middlewares/likesMiddleware.js';
+import { checkIfUserHasSharedPost } from '../middlewares/sharesMiddleware.js';
 import { validateCommentText } from '../middlewares/commentsMiddleware.js';
 
-import { findUrl, createUrl, createPost, validatePostId, checkIfUserHasLikedPost, checkIfUserHasSharedPost, validatePostText } from '../middlewares/postMiddleware.js';
-import requireToken from '../middlewares/requireToken.js';
-import postSchema from '../schemas/postSchema.js';
-import { validateSchema } from '../middlewares/schemaValidator.js';
-
-import { unsharePost, sharePost, shareNewPost } from '../controllers/shareController.js';
+import { createNewComment } from '../controllers/commentsController.js';
+import { likePost, unlikePost } from '../controllers/likesController.js';
+import { sharePost, unsharePost } from '../controllers/sharesController.js';
 
 
 
