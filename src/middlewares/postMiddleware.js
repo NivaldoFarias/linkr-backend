@@ -26,7 +26,6 @@ export async function createUrl(req, res, next) {
     const url = { url: req.body.url, title: '', description: '', imageUrl: '' };
     try {
       const promise = await urlMetadata(url.url).then((metadata) => {
-        // console.log(metadata);
         url.title = metadata.title;
         url.description = metadata.description;
         url.imageUrl = metadata.image;
@@ -109,17 +108,12 @@ export async function checkIfUserHasLikedPost(req, res, next) {
 
 
 export function checkGetPostsQuery(req, res, next) {
-  // beforeDate, afterDate, limit
-  // date format example: 2022-06-22T04:11:06.391Z => YYYY-MM-DDTHH:MM:SS.SSSZ
-  // validate FORMAT of beforeDate and afterDate. if invalid, save null to beforeDate and afterDate.
 
   const { beforeDate, afterDate, limit } = req.query;
 
   res.locals.beforeDate = validateDate(beforeDate);
   res.locals.afterDate = validateDate(afterDate);
   res.locals.limit = limit && limit.match(/^\d+$/) ? limit : 10;
-
-  // console.log(res.locals);
 
   console.log(chalk.magenta(`${MIDDLEWARE} query validated`));
   next();
@@ -130,8 +124,6 @@ export function checkCheckPostsQuery(req, res, next) {
 
   res.locals.beforeDate = validateDate(beforeDate);
   res.locals.afterDate = validateDate(afterDate);
-
-  console.log(res.locals);
 
   if (res.locals.beforeDate || res.locals.afterDate) {
     console.log(chalk.magenta(`${MIDDLEWARE} query validated`));
@@ -145,7 +137,6 @@ export function checkCheckPostsQuery(req, res, next) {
 
 
 function validateDate(date) {
-  // YYYY-MM-DDTHH:MM:SS.SSSZ
   if (date && date.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/)) {
     return date;
   }

@@ -85,7 +85,6 @@ async function userIdHasLikedPost(userId, postId) {
 
 async function likePost(userId, postId) {
   const query = `INSERT INTO likes (user_id, post_id) VALUES ($1, $2)`;
-  console.log(query, [userId, postId]);
   const response = await db.query(query, [userId, postId]);
   return response.rows[0];
 }
@@ -154,11 +153,6 @@ async function deleteLikesByPostId(postId) {
 
 async function getTimelineShares(userId, beforeDate, afterDate, limit) {
 
-  // get shares from users that userId follows
-  // array of shares = {id, postId, userId, createdAt}
-  // beforeDate and afterDate are strings and are optional
-  // limit is an integer and is optional
-
   const query = `
     SELECT
       s.id, s.post_id AS "postId", s.user_id AS "userId", s.created_at AS "createdAt"
@@ -170,13 +164,11 @@ async function getTimelineShares(userId, beforeDate, afterDate, limit) {
     ORDER BY s.created_at DESC
     ${limit ? `LIMIT ${limit}` : ''};
   `
-  console.log(query);
   const response = await db.query(query);
   return response.rows;
 }
 
 async function getPostById(postId) {
-  // id, createdAt, userId, text, url, image (url), title (url), description (url)
   const query = `
     SELECT
       p.id, p.created_at AS "createdAt", p.user_id AS "userId", p.text,
@@ -190,7 +182,6 @@ async function getPostById(postId) {
 }
 
 async function getPostComments(postId) {
-  // userId, text, createdAt
   const query = `
     SELECT
       c.user_id AS "userId", c.text, c.created_at AS "createdAt"
@@ -202,7 +193,6 @@ async function getPostComments(postId) {
 }
 
 async function getSharesInfo(postId, userId) {
-  // userHasShared AND numberOfShares
   const query = `
     SELECT
       COUNT(*) AS "numberOfShares",
@@ -215,8 +205,6 @@ async function getSharesInfo(postId, userId) {
 }
 
 async function getUserDataById(otherUserId, userId) {
-  // id, username, imageUrl, isFollowing
-  // console.log('aqui', userId, otherUserId);
   const query = `
     SELECT
       u.id, u.username, u.image_url AS "imageUrl",
@@ -231,7 +219,7 @@ async function getUserDataById(otherUserId, userId) {
   return response.rows[0];
 }
 
-async function checkTimelinePosts(userId, operand, date) {
+async function checkTimelineShares(userId, operand, date) {
   const query = `
     SELECT
       COUNT(*) AS "numberOfShares"
@@ -265,5 +253,5 @@ export const postsRepository = {
   getPostComments,
   getSharesInfo,
   getUserDataById,
-  checkTimelinePosts
+  checkTimelineShares
 };
