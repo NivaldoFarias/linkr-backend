@@ -18,5 +18,6 @@ async function getPostComments(postId) {
 }
 
 export const commentsRepository = {
-  createNewComment, getPostComments
-}
+  createNewComment,
+  getPostComments,
+};

@@ -1,7 +1,12 @@
 import { Router } from 'express';
 import logThis from '../blueprints/logThis.js';
 
-import { validateSignUp, validateSignIn, usernameIsUnique, validatePassword } from '../middlewares/authMiddleware.js';
+import {
+  validateSignUp,
+  validateSignIn,
+  usernameIsUnique,
+  validatePassword,
+} from '../middlewares/authMiddleware.js';
 import { signIn, signUp } from '../controllers/authController.js';
 import { findUser } from '../middlewares/usersMiddleware.js';
 

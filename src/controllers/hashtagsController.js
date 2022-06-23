@@ -47,7 +47,6 @@ export async function saveHashtags(req, res, next) {
   const cleanHashtags = hashtags.map((hashtag) => hashtag.substring(1).toLowerCase());
 
   if (cleanHashtags) {
-
     try {
       const hashtagIds = await Promise.all(
         cleanHashtags.map(async (hashtag) => {
@@ -76,8 +75,7 @@ export async function saveHashtags(req, res, next) {
     } catch (e) {
       next(e);
     }
-  }
-  else {
+  } else {
     console.log(chalk.magenta(`${MIDDLEWARE} no hashtags found`));
     res.sendStatus(201);
   }

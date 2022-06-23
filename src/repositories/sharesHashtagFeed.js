@@ -1,6 +1,5 @@
 import db from '../database/index.js';
 
-
 async function getHashtagShares(hashtagId, before, after, limit) {
   const query = `
       SELECT
@@ -13,11 +12,10 @@ async function getHashtagShares(hashtagId, before, after, limit) {
       ${after ? `AND s.created_at > '${after}'` : ''}
       ORDER BY s.created_at DESC
       LIMIT ${limit ? limit : 10};
-    `
+    `;
   const response = await db.query(query);
   return response.rows;
 }
-
 
 async function checkHashtagSharesBeforeDate(hashtagId, date) {
   const query = `
@@ -47,9 +45,8 @@ async function checkHashtagSharesAfterDate(hashtagId, date) {
   return response.rows[0].numberOfShares || 0;
 }
 
-
 export const hashtagsSharesRepository = {
   getHashtagShares,
   checkHashtagSharesBeforeDate,
-  checkHashtagSharesAfterDate
+  checkHashtagSharesAfterDate,
 };

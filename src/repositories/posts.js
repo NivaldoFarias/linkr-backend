@@ -49,8 +49,6 @@ async function getTimelinePosts() {
   return response.rows;
 }
 
-
-
 async function insertPost(text, urlId, userId) {
   const query = `
     INSERT INTO posts (text, url_id, user_id)
@@ -66,7 +64,6 @@ async function findPostById(postId) {
   const response = await db.query(query, [postId]);
   return response.rows[0];
 }
-
 
 async function getPost(postId) {
   const query = `
@@ -104,7 +101,6 @@ async function deletePostById(postId, userId) {
   return response.rows[0];
 }
 
-
 async function getPostById(postId) {
   const query = `
     SELECT
@@ -118,8 +114,6 @@ async function getPostById(postId) {
   return response.rows[0];
 }
 
-
-
 export const postsRepository = {
   insertPost,
   updatePost,
@@ -129,5 +123,5 @@ export const postsRepository = {
   getTimelinePosts,
   getPost,
   deletePostById,
-  getPostById
+  getPostById,
 };

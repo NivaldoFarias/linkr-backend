@@ -40,8 +40,6 @@ export async function createHashtag(hashtag) {
   return response.rows[0];
 }
 
-
-
 export const hashtagRepository = {
   getHashtagIdByName,
   getTrendingHashtags,

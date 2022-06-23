@@ -1,7 +1,5 @@
 import db from '../database/index.js';
 
-
-
 async function getTimelineShares(userId, before, after, limit) {
   const query = `
       SELECT
@@ -13,11 +11,10 @@ async function getTimelineShares(userId, before, after, limit) {
       ${after ? `AND s.created_at > '${after}'` : ''}
       ORDER BY s.created_at DESC
       LIMIT ${limit ? limit : 10};
-    `
+    `;
   const response = await db.query(query);
   return response.rows;
 }
-
 
 async function checkTimelineSharesBeforeDate(userId, date) {
   const query = `
@@ -45,9 +42,8 @@ async function checkTimelineSharesAfterDate(userId, date) {
   return response.rows[0].numberOfShares || 0;
 }
 
-
 export const timelineSharesRepository = {
   getTimelineShares,
   checkTimelineSharesBeforeDate,
-  checkTimelineSharesAfterDate
+  checkTimelineSharesAfterDate,
 };

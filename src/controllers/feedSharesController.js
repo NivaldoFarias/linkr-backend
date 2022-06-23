@@ -11,7 +11,12 @@ export async function getTimelineData(req, res) {
   const { userId, beforeDate, afterDate, limit } = res.locals;
 
   try {
-    const shares = await timelineSharesRepository.getTimelineShares(userId, beforeDate, afterDate, limit);
+    const shares = await timelineSharesRepository.getTimelineShares(
+      userId,
+      beforeDate,
+      afterDate,
+      limit,
+    );
     console.log(chalk.magenta(`${API} shares fetched`));
     const data = await getDataFromShares(shares, userId, null);
     console.log(chalk.magenta(`${API} data fetched`));
@@ -27,15 +32,21 @@ export async function checkTimelineShares(req, res) {
   beforeDate = beforeDate ? beforeDate : afterDate;
 
   try {
-    const postsBeforeDate = await timelineSharesRepository.checkTimelineSharesBeforeDate(userId, beforeDate);
-    const postsAfterDate = await timelineSharesRepository.checkTimelineSharesAfterDate(userId, afterDate);
+    const postsBeforeDate = await timelineSharesRepository.checkTimelineSharesBeforeDate(
+      userId,
+      beforeDate,
+    );
+    const postsAfterDate = await timelineSharesRepository.checkTimelineSharesAfterDate(
+      userId,
+      afterDate,
+    );
 
     const data = {
       beforeDate,
       postsBeforeDate,
       afterDate,
       postsAfterDate,
-    }
+    };
 
     console.log(chalk.magenta(`${API} timeline shares checked`));
     res.send(data);
@@ -49,7 +60,12 @@ export async function checkTimelineShares(req, res) {
 export async function getUserData(req, res) {
   const { userId, visitedUserId, beforeDate, afterDate, limit } = res.locals;
   try {
-    const shares = await userSharesRepository.getUserShares(visitedUserId, beforeDate, afterDate, limit);
+    const shares = await userSharesRepository.getUserShares(
+      visitedUserId,
+      beforeDate,
+      afterDate,
+      limit,
+    );
     console.log(chalk.magenta(`${API} shares fetched`));
     const data = await getDataFromShares(shares, userId, visitedUserId);
     console.log(chalk.magenta(`${API} data fetched`));
@@ -65,15 +81,21 @@ export async function checkUserShares(req, res) {
   beforeDate = beforeDate ? beforeDate : afterDate;
 
   try {
-    const postsBeforeDate = await userSharesRepository.checkUserSharesBeforeDate(visitedUserId, beforeDate);
-    const postsAfterDate = await userSharesRepository.checkUserSharesAfterDate(visitedUserId, afterDate);
+    const postsBeforeDate = await userSharesRepository.checkUserSharesBeforeDate(
+      visitedUserId,
+      beforeDate,
+    );
+    const postsAfterDate = await userSharesRepository.checkUserSharesAfterDate(
+      visitedUserId,
+      afterDate,
+    );
 
     const data = {
       beforeDate,
       postsBeforeDate,
       afterDate,
       postsAfterDate,
-    }
+    };
 
     console.log(chalk.magenta(`${API} user shares checked`));
     res.send(data);
@@ -82,13 +104,17 @@ export async function checkUserShares(req, res) {
   }
 }
 
-
 // HASHTAG SHARES
 
 export async function getHashtagData(req, res) {
   const { userId, hashtagId, beforeDate, afterDate, limit } = res.locals;
   try {
-    const shares = await hashtagsSharesRepository.getHashtagShares(hashtagId, beforeDate, afterDate, limit);
+    const shares = await hashtagsSharesRepository.getHashtagShares(
+      hashtagId,
+      beforeDate,
+      afterDate,
+      limit,
+    );
     console.log(chalk.magenta(`${API} shares fetched`));
     const data = await getDataFromShares(shares, userId, null);
     console.log(chalk.magenta(`${API} data fetched`));
@@ -104,15 +130,21 @@ export async function checkHashtagShares(req, res) {
   beforeDate = beforeDate ? beforeDate : afterDate;
 
   try {
-    const postsBeforeDate = await hashtagsSharesRepository.checkHashtagSharesBeforeDate(hashtagId, beforeDate);
-    const postsAfterDate = await hashtagsSharesRepository.checkHashtagSharesAfterDate(hashtagId, afterDate);
+    const postsBeforeDate = await hashtagsSharesRepository.checkHashtagSharesBeforeDate(
+      hashtagId,
+      beforeDate,
+    );
+    const postsAfterDate = await hashtagsSharesRepository.checkHashtagSharesAfterDate(
+      hashtagId,
+      afterDate,
+    );
 
     const data = {
       beforeDate,
       postsBeforeDate,
       afterDate,
       postsAfterDate,
-    }
+    };
 
     console.log(chalk.magenta(`${API} hashtag shares checked`));
     res.send(data);
@@ -120,4 +152,3 @@ export async function checkHashtagShares(req, res) {
     res.status(500).send({ error: e });
   }
 }
-

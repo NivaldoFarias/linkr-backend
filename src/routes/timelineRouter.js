@@ -7,7 +7,21 @@ import { getTimelineData, checkTimelineShares } from '../controllers/feedSharesC
 
 const timelineRouter = Router();
 
-timelineRouter.get('/posts', logThis('Get user timeline'), requireToken, validateUserId, checkGetSharesQuery, getTimelineData);
-timelineRouter.get('/posts/check', logThis('Check timeline'), requireToken, validateUserId, checkCheckSharesQuery, checkTimelineShares);
+timelineRouter.get(
+  '/posts',
+  logThis('Get user timeline'),
+  requireToken,
+  validateUserId,
+  checkGetSharesQuery,
+  getTimelineData,
+);
+timelineRouter.get(
+  '/posts/check',
+  logThis('Check timeline'),
+  requireToken,
+  validateUserId,
+  checkCheckSharesQuery,
+  checkTimelineShares,
+);
 
 export default timelineRouter;
