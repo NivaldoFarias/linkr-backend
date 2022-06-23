@@ -59,6 +59,19 @@ export async function getDataFromShares(shares, userId) {
 }
 
 
+export async function getPostData(postId, userId) {
+    const post = await getPost(postId);
+    const userIds = [post.userId, ...post.comments.map(comment => comment.userId)];
+    const usersArray = await getUserArrayFromUserIds(userIds, userId);
+    const users = Object.fromEntries(usersArray.map(user => [user.id, user]));
+    const data = {
+        post,
+        users
+    }
+    console.log(chalk.magenta(`${API} post fetched`));
+    return data;
+}
+
 export async function getPost(postId, userId) {
     const post = await postsRepository.getPostById(postId);
     const likes = await getLikesDataForPost(postId, userId);
@@ -102,7 +115,6 @@ export async function getLikesDataForPost(postId, userId) {
     const likes = await likesRepository.getPostLikes(postId);
     const totalLikes = likes.length;
 
-
     const likesFiltered = likes.filter((like) => like.userId !== userId);
     const usersWhoLiked =
         likesFiltered.length > 0
@@ -116,7 +128,6 @@ export async function getLikesDataForPost(postId, userId) {
         usersWhoLiked,
         userHasLiked
     }
-
 
     return likesData;
 }
