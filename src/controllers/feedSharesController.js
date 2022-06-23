@@ -13,7 +13,7 @@ export async function getTimelineData(req, res) {
   try {
     const shares = await timelineSharesRepository.getTimelineShares(userId, beforeDate, afterDate, limit);
     console.log(chalk.magenta(`${API} shares fetched`));
-    const data = await getDataFromShares(shares, userId);
+    const data = await getDataFromShares(shares, userId, null);
     console.log(chalk.magenta(`${API} data fetched`));
     res.send(data);
   } catch (e) {
@@ -51,7 +51,7 @@ export async function getUserData(req, res) {
   try {
     const shares = await userSharesRepository.getUserShares(visitedUserId, beforeDate, afterDate, limit);
     console.log(chalk.magenta(`${API} shares fetched`));
-    const data = await getDataFromShares(shares, userId);
+    const data = await getDataFromShares(shares, userId, visitedUserId);
     console.log(chalk.magenta(`${API} data fetched`));
     res.send(data);
   } catch (e) {
@@ -90,7 +90,7 @@ export async function getHashtagData(req, res) {
   try {
     const shares = await hashtagsSharesRepository.getHashtagShares(hashtagId, beforeDate, afterDate, limit);
     console.log(chalk.magenta(`${API} shares fetched`));
-    const data = await getDataFromShares(shares, userId);
+    const data = await getDataFromShares(shares, userId, null);
     console.log(chalk.magenta(`${API} data fetched`));
     res.send(data);
   } catch (e) {
