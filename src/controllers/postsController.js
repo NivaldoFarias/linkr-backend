@@ -4,7 +4,7 @@ import { hashtagRepository } from '../repositories/hashtags.js';
 import { likesRepository } from '../repositories/likes.js';
 import { postsRepository } from '../repositories/posts.js';
 import { hashtagsPostsRepository } from '../repositories/hashtagsPosts.js';
-
+import { getPostData } from '../util/Feed.utils.js';
 
 
 export async function deletePost(req, res) {
@@ -65,20 +65,14 @@ export async function updatePost(req, res) {
   }
 }
 
+
+
+
 export async function getPost(_req, res) {
-  const { postId } = res.locals;
+  const { postId, userId } = res.locals;
   try {
-    const post = await postsRepository.getPost(postId);
-    const likes = await likesRepository.getPostLikes(post.id);
-    post.totalLikes = likes.length;
-    post.usersWhoLiked =
-      likes.length > 0 ? likes.slice(0, likes.length > 2 ? 2 : likes.length) : [];
-    post.userHasLiked = false;
-    for (const like of likes) {
-      if (like.userId === res.locals.userId) {
-        post.userHasLiked = true;
-      }
-    }
+    const post = await getPostData(postId, userId);
+    console.log(chalk.magenta(`${MIDDLEWARE} post fetched`));
     res.send(post);
   } catch (e) {
     res.status(500).send({ error: e });

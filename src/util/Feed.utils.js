@@ -6,7 +6,7 @@ import { sharesRepository } from '../repositories/shares.js';
 import { commentsRepository } from '../repositories/comments.js';
 import { userRepository } from '../repositories/users.js';
 
-export async function getDataFromShares(shares, userId) {
+export async function getDataFromShares(shares, userId, pageOwnerId) {
     const uniquePostIds = shares.reduce((acc, curr) => {
         if (!acc.includes(curr.postId)) {
             acc.push(curr.postId);
@@ -18,6 +18,9 @@ export async function getDataFromShares(shares, userId) {
     console.log(chalk.magenta(`${API} posts fetched`));
 
     const repeatedUserIdsArray = [];
+    if (pageOwnerId) {
+        repeatedUserIdsArray.push(pageOwnerId);
+    }
 
     postsArray.forEach((post) => {
         repeatedUserIdsArray.push(post.userId);
@@ -50,6 +53,7 @@ export async function getDataFromShares(shares, userId) {
     });
 
     const data = {
+        pageOwnerId,
         shares,
         posts,
         users
@@ -58,6 +62,19 @@ export async function getDataFromShares(shares, userId) {
     return data;
 }
 
+
+export async function getPostData(postId, userId) {
+    const post = await getPost(postId);
+    const userIds = [post.userId, ...post.comments.map(comment => comment.userId)];
+    const usersArray = await getUserArrayFromUserIds(userIds, userId);
+    const users = Object.fromEntries(usersArray.map(user => [user.id, user]));
+    const data = {
+        post,
+        users
+    }
+    console.log(chalk.magenta(`${API} post fetched`));
+    return data;
+}
 
 export async function getPost(postId, userId) {
     const post = await postsRepository.getPostById(postId);
@@ -102,7 +119,6 @@ export async function getLikesDataForPost(postId, userId) {
     const likes = await likesRepository.getPostLikes(postId);
     const totalLikes = likes.length;
 
-
     const likesFiltered = likes.filter((like) => like.userId !== userId);
     const usersWhoLiked =
         likesFiltered.length > 0
@@ -116,7 +132,6 @@ export async function getLikesDataForPost(postId, userId) {
         usersWhoLiked,
         userHasLiked
     }
-
 
     return likesData;
 }
