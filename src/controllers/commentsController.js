@@ -2,6 +2,7 @@ import chalk from "chalk";
 import { MIDDLEWARE } from "../blueprints/chalk.js";
 import { commentsRepository } from "../repositories/comments.js";
 import { postsRepository } from "../repositories/posts.js";
+import { followingsRepository } from '../repositories/followings.js';
 
 export async function createNewComment(req, res) {
   const { userId, postId, text } = res.locals;
@@ -18,10 +19,13 @@ export async function createNewComment(req, res) {
 
 export async function getPostComments(req, res) {
   const { postId } = req.params
+  const { userId } = res.locals
   try {
     const post = await postsRepository.getPost(postId);
     const comments = await commentsRepository.getPostComments(postId)
     for(const comment of comments) {
+      const followed = await followingsRepository.getFollowing(comment.userId, userId);
+      followed !== null ? comment.userIsFollowed = true : comment.userIsFollowed = false;
       post.userId === comment.userId ? comment.isPostAuthor = true : comment.isPostAuthor = false
     }
     

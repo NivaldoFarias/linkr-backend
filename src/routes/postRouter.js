@@ -46,5 +46,5 @@ postRouter.route('/:postId/unshare').post(logThis('Unshare post'), requireToken,
 // COMMENTS
 
 postRouter.route('/:postId/comment').post(requireToken, validatePostId, validateCommentText, createNewComment);
-postRouter.route('/:postId/comments').get(getPostComments)
+postRouter.route('/:postId/comments').get(requireToken, validatePostId, getPostComments)
 export default postRouter;
