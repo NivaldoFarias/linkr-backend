@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import { MIDDLEWARE } from "../blueprints/chalk.js";
 import { commentsRepository } from "../repositories/comments.js";
+import { postsRepository } from "../repositories/posts.js";
 
 export async function createNewComment(req, res) {
   const { userId, postId, text } = res.locals;
@@ -13,4 +14,27 @@ export async function createNewComment(req, res) {
     console.log(chalk.red(`${MIDDLEWARE} something went wrong creating comment`));
     res.sendStatus(500);
   }
+}
+
+export async function getPostComments(req, res) {
+  const { postId } = req.params
+  try {
+    const post = await postsRepository.getPost(postId);
+    const comments = await commentsRepository.getPostComments(postId)
+    for(const comment of comments) {
+      post.userId === comment.userId ? comment.isPostAuthor = true : comment.isPostAuthor = false
+    }
+    
+    const data = {
+      totalComments: comments.length,
+      comments: comments
+    }
+
+    res.send(data)
+    
+  } catch{
+    console.log(chalk.red(`${MIDDLEWARE} something went wrong retriving comments`));
+    res.sendStatus(500);
+  }
+  
 }

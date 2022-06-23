@@ -14,7 +14,7 @@ import { checkIfUserHasLikedPost } from '../middlewares/likesMiddleware.js';
 import { checkIfUserHasSharedPost } from '../middlewares/sharesMiddleware.js';
 import { validateCommentText } from '../middlewares/commentsMiddleware.js';
 
-import { createNewComment } from '../controllers/commentsController.js';
+import { createNewComment, getPostComments } from '../controllers/commentsController.js';
 import { likePost, unlikePost } from '../controllers/likesController.js';
 import { sharePost, unsharePost } from '../controllers/sharesController.js';
 
@@ -46,5 +46,5 @@ postRouter.route('/:postId/unshare').post(logThis('Unshare post'), requireToken,
 // COMMENTS
 
 postRouter.route('/:postId/comment').post(requireToken, validatePostId, validateCommentText, createNewComment);
-
+postRouter.route('/:postId/comments').get(getPostComments)
 export default postRouter;
