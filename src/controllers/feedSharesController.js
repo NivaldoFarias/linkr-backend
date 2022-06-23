@@ -7,23 +7,19 @@ import { getDataFromShares } from '../util/Feed.utils.js';
 
 // TIMELINE SHARES
 
-export async function getTimelineData(req, res) {
+export async function getTimelineData(_req, res) {
   const { userId, beforeDate, afterDate, limit } = res.locals;
 
-  try {
-    const shares = await timelineSharesRepository.getTimelineShares(
-      userId,
-      beforeDate,
-      afterDate,
-      limit,
-    );
-    console.log(chalk.magenta(`${API} shares fetched`));
-    const data = await getDataFromShares(shares, userId, null);
-    console.log(chalk.magenta(`${API} data fetched`));
-    res.send(data);
-  } catch (e) {
-    res.status(500).send({ error: e });
-  }
+  const shares = await timelineSharesRepository.getTimelineShares(
+    userId,
+    beforeDate,
+    afterDate,
+    limit,
+  );
+  console.log(chalk.magenta(`${API} shares fetched`));
+  const data = await getDataFromShares(shares, userId, null);
+  console.log(chalk.magenta(`${API} data fetched`));
+  return res.send(data);
 }
 
 export async function checkTimelineShares(req, res) {

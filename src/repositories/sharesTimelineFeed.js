@@ -12,6 +12,8 @@ async function getTimelineShares(userId, before, after, limit) {
       ORDER BY s.created_at DESC
       LIMIT ${limit ? limit : 10};
     `;
+
+  console.log(query);
   const response = await db.query(query);
   return response.rows;
 }
@@ -38,6 +40,7 @@ async function checkTimelineSharesAfterDate(userId, date) {
         WHERE f.user_id = ${userId}
         AND s.created_at > '${date}'
     `;
+  console.log(query);
   const response = await db.query(query);
   return response.rows[0].numberOfShares || 0;
 }
