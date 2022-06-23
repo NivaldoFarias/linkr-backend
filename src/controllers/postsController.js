@@ -6,7 +6,6 @@ import { postsRepository } from '../repositories/posts.js';
 import { hashtagsPostsRepository } from '../repositories/hashtagsPosts.js';
 import { getPostData } from '../util/Feed.utils.js';
 
-
 export async function deletePost(req, res) {
   const { userId, postId } = res.locals;
   console.log('hello', userId, postId);
@@ -64,9 +63,6 @@ export async function updatePost(req, res) {
     res.sendStatus(500);
   }
 }
-
-
-
 
 export async function getPost(_req, res) {
   const { postId, userId } = res.locals;
