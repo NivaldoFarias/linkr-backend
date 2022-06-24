@@ -49,8 +49,6 @@ async function getTimelinePosts() {
   return response.rows;
 }
 
-
-
 async function insertPost(text, urlId, userId) {
   const query = `
     INSERT INTO posts (text, url_id, user_id)
@@ -66,7 +64,6 @@ async function findPostById(postId) {
   const response = await db.query(query, [postId]);
   return response.rows[0];
 }
-
 
 async function getPost(postId) {
   const query = `
@@ -94,16 +91,11 @@ async function updatePost(postId, text) {
   return response.rows[0];
 }
 
-async function deletePostById(postId, userId) {
-  const query = `
-    DELETE FROM posts 
-    WHERE id=$1 AND user_id=$2
-  `;
-
-  const response = await db.query(query, [postId, userId]);
+async function deletePost(postId) {
+  const query = `DELETE FROM posts WHERE id = $1`;
+  const response = await db.query(query, [postId]);
   return response.rows[0];
 }
-
 
 async function getPostById(postId) {
   const query = `
@@ -118,8 +110,6 @@ async function getPostById(postId) {
   return response.rows[0];
 }
 
-
-
 export const postsRepository = {
   insertPost,
   updatePost,
@@ -128,6 +118,6 @@ export const postsRepository = {
   getPostsByUserId,
   getTimelinePosts,
   getPost,
-  deletePostById,
-  getPostById
+  deletePost,
+  getPostById,
 };

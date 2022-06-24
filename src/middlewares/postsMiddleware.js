@@ -5,51 +5,43 @@ import sanitizeHtml from 'sanitize-html';
 import { postsRepository } from '../repositories/posts.js';
 import { sharesRepository } from '../repositories/shares.js';
 
-
 export async function createPost(req, res, next) {
   const { userId, url } = res.locals;
   const urlId = url.id;
   const { text } = req.body;
-  try {
-    const post = await postsRepository.insertPost(text, urlId, userId);
-    res.locals.postId = post.id;
-    console.log(chalk.magenta(`${MIDDLEWARE} post created. postId: `, post.id));
 
-    const share = await sharesRepository.insertShare(userId, post.id);
-    res.locals.shareId = share.id;
-    console.log(chalk.magenta(`${MIDDLEWARE} post shared`));
+  const post = await postsRepository.insertPost(text, urlId, userId);
+  res.locals.postId = post.id;
+  console.log(chalk.magenta(`${MIDDLEWARE} post created. postId: `, post.id));
 
-    next();
-  } catch (e) {
-    next(e);
-  }
+  const share = await sharesRepository.insertShare(userId, post.id);
+  res.locals.shareId = share.id;
+  console.log(chalk.magenta(`${MIDDLEWARE} post shared`));
+
+  return next();
 }
 
 export async function validatePostId(req, res, next) {
   const { postId } = req.params;
-  try {
-    const post = await postsRepository.findPostById(postId);
-    if (post) {
-      res.locals.postId = postId;
-      console.log(chalk.magenta(`${MIDDLEWARE} post found`));
-      next();
-    } else {
-      console.log(chalk.magenta(`${MIDDLEWARE} post not found`));
-      res.sendStatus(404);
-    }
-  } catch (e) {
-    next(e);
+  const post = await postsRepository.findPostById(postId);
+  if (!post) {
+    console.log(chalk.magenta(`${MIDDLEWARE} post not found`));
+    return res.sendStatus(404);
   }
+
+  res.locals.postCreatorId = post.user_id;
+  res.locals.postId = postId;
+  console.log(chalk.magenta(`${MIDDLEWARE} post found`));
+  return next();
 }
 
 export async function validatePostText(req, res, next) {
   const { text } = req.body;
-  if (text) {
-    res.locals.text = sanitizeHtml(text);
-    console.log(chalk.magenta(`${MIDDLEWARE} text validated`));
-    next();
-  } else {
+  if (!text) {
     console.log(chalk.magenta(`${MIDDLEWARE} text not validated`));
-    res.sendStatus(400);
+    return res.sendStatus(400);
   }
+  res.locals.text = sanitizeHtml(text);
+  console.log(chalk.magenta(`${MIDDLEWARE} text validated`));
+  return next();
 }

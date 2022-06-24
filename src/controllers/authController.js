@@ -15,7 +15,6 @@ async function signUp(_req, res) {
   const createdAt = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
   const createdUser = await authRepository.signUp(email, cryptPass, username, imageUrl, createdAt);
-  // user has to follow itself
   await followingsRepository.followUserById(createdUser.id, createdUser.id);
   console.log(chalk.blue(`${API} User ${username} registered successfully`));
   return res.sendStatus(201);

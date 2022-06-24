@@ -3,7 +3,6 @@ import chalk from 'chalk';
 import urlMetadata from 'url-metadata';
 import { urlsRepository } from '../repositories/urls.js';
 
-
 export async function findUrl(req, res, next) {
   try {
     const url = await urlsRepository.findUrl(req.body.url);
@@ -24,13 +23,15 @@ export async function createUrl(req, res, next) {
     console.log(chalk.magenta(`creating url...`));
     const url = { url: req.body.url, title: '', description: '', imageUrl: '' };
     try {
-      const promise = await urlMetadata(url.url).then((metadata) => {
-        url.title = metadata.title;
-        url.description = metadata.description;
-        url.imageUrl = metadata.image;
-      }).catch((e) => {
-        console.log(chalk.red(`${MIDDLEWARE} error getting url metadata: ${e}`))
-      });
+      const promise = await urlMetadata(url.url)
+        .then((metadata) => {
+          url.title = metadata.title;
+          url.description = metadata.description;
+          url.imageUrl = metadata.image;
+        })
+        .catch((e) => {
+          console.log(chalk.red(`${MIDDLEWARE} error getting url metadata: ${e}`));
+        });
       const newUrl = await urlsRepository.createUrl(
         url.url,
         url.title,
@@ -46,4 +47,3 @@ export async function createUrl(req, res, next) {
     }
   }
 }
-

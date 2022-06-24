@@ -1,6 +1,5 @@
 import db from '../database/index.js';
 
-
 async function getUserShares(userId, before, after, limit) {
   const query = `
       SELECT
@@ -12,7 +11,7 @@ async function getUserShares(userId, before, after, limit) {
       ${after ? `AND s.created_at > '${after}'` : ''}
       ORDER BY s.created_at DESC
       LIMIT ${limit ? limit : 10};
-    `
+    `;
   const response = await db.query(query);
   return response.rows;
 }
@@ -43,9 +42,8 @@ async function checkUserSharesAfterDate(userId, date) {
   return response.rows[0].numberOfShares || 0;
 }
 
-
 export const userSharesRepository = {
   getUserShares,
   checkUserSharesBeforeDate,
-  checkUserSharesAfterDate
+  checkUserSharesAfterDate,
 };

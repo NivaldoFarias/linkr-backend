@@ -58,5 +58,5 @@ export const userRepository = {
   getUsersByUserName,
   getUserByUsername,
   getUserById,
-  getUserDataById
+  getUserDataById,
 };

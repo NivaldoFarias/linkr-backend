@@ -32,3 +32,10 @@ export async function getUser(req, res, next) {
     next(e);
   }
 }
+
+
+export async function getUserById(req, res, next) {
+  const { userId, visitedUserId } = res.locals;
+  const user = await userRepository.getUserDataById(visitedUserId, userId);
+  return res.status(200).json({ user });
+}
