@@ -1,21 +1,20 @@
 import db from '../database/index.js';
 
-const getUsersByUserName = async (username, user_id) => {
+const getUsersByUserName = async (username, userId) => {
   const name = username.toLowerCase();
-  const searchQuery = `
+  const query = `
     SELECT
-      usr.id,
-      usr.username, 
-      usr.image_url as "imageUrl", 
-      usr.email, 
-      f.user_id as "followerId"
+      u.id,
+      u.username,
+      COUNT(CASE WHEN f.user_id = ${userId} THEN 1 END) > 0 AS "isFollowing",
+      u.image_url AS "imageUrl"
     FROM users u
-    LEFT JOIN followings f ON f.user_id=u.id
-    LEFT JOIN users usr ON usr.id = f.followed_id
-    WHERE LOWER(usr.username) LIKE $1 AND (u.id = $2 OR u.id!=$2) AND u.id != f.followed_id
-    ORDER BY u.id;
+    JOIN followings f ON f.followed_id = u.id
+    WHERE LOWER(u.username) LIKE LOWER('${username}%')
+    GROUP BY u.id
+    ORDER BY "isFollowing" DESC, u.username;
   `
-  const result = await db.query(searchQuery, [`${name}%`,user_id]);
+  const result = await db.query(query);
   return result.rows ?? null;
 };
 

@@ -15,7 +15,7 @@ import { verifyIfUserIsFollowed } from '../middlewares/followingsMiddleware.js';
 const usersRoute = Router();
 
 usersRoute.route('/').get(logThis('Get user'), requireToken, getUser);
-usersRoute.route('/username/:username').get(logThis('Find users'), requireToken, usersByUserName);
+usersRoute.route('/username/:username').get(logThis('Find users'), requireToken, validateUserId, usersByUserName);
 
 usersRoute.get(
   '/:userId',

@@ -2,21 +2,9 @@ import { userRepository } from '../repositories/users.js';
 
 export const usersByUserName = async (req, res, next) => {
   const { username } = req.params;
-  const {userId} = res.locals;
+  const { userId } = res.locals;
   try {
     const users = await userRepository.getUsersByUserName(username, userId);
-
-    users.map((item)=>{
-      if (item.followerId == userId) {
-        item.following = true;
-      }else {
-        item.following = false;
-      }
-      delete item.email;
-      delete item.followerId;
-
-      return item;
-    });
     res.status(200).json({ users });
   } catch (e) {
     next(e);
