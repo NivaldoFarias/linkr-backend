@@ -91,13 +91,9 @@ async function updatePost(postId, text) {
   return response.rows[0];
 }
 
-async function deletePostById(postId, userId) {
-  const query = `
-    DELETE FROM posts 
-    WHERE id=$1 AND user_id=$2
-  `;
-
-  const response = await db.query(query, [postId, userId]);
+async function deletePost(postId) {
+  const query = `DELETE FROM posts WHERE id = $1`;
+  const response = await db.query(query, [postId]);
   return response.rows[0];
 }
 
@@ -122,6 +118,6 @@ export const postsRepository = {
   getPostsByUserId,
   getTimelinePosts,
   getPost,
-  deletePostById,
+  deletePost,
   getPostById,
 };

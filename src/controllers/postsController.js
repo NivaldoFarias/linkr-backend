@@ -5,14 +5,15 @@ import { likesRepository } from '../repositories/likes.js';
 import { postsRepository } from '../repositories/posts.js';
 import { hashtagsPostsRepository } from '../repositories/hashtagsPosts.js';
 import { getPostData } from '../util/Feed.utils.js';
+import { sharesRepository } from '../repositories/shares.js';
 
 export async function deletePost(req, res) {
   const { userId, postId } = res.locals;
-  console.log('hello', userId, postId);
   try {
     await hashtagsPostsRepository.deleteHashtagsPostsByPostId(postId);
+    await sharesRepository.deleteSharesByPostId(postId);
     await likesRepository.deleteLikesByPostId(postId);
-    await postsRepository.deletePostById(postId, userId);
+    await postsRepository.deletePost(postId);
     console.log(chalk.magenta(`${MIDDLEWARE} user delete post`));
     res.sendStatus(204);
   } catch (error) {

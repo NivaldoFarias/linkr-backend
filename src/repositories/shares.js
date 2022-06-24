@@ -19,6 +19,15 @@ async function deleteShare(shareId) {
   return response.rows[0];
 }
 
+async function deleteSharesByPostId(postId) {
+  const query = `
+        DELETE FROM shares
+        WHERE post_id = $1;
+    `;
+  const response = await db.query(query, [postId]);
+  return response.rows[0];
+}
+
 async function findShareId(userId, postId) {
   const query = `
         SELECT id
@@ -47,4 +56,5 @@ export const sharesRepository = {
   deleteShare,
   findShareId,
   getSharesInfo,
+  deleteSharesByPostId
 };
