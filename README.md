@@ -1,37 +1,18 @@
-<div id="top"></div>
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/NivaldoFarias/linkr-backend#readme">
-    <img src="https://github.com/NivaldoFarias/linkr-frontend/blob/main/src/assets/logo.png" alt="Linkr logo" width="100">
-  </a>
+## Summary
 
-<h3 align="center">Linkr | Back end</h3>
-  <h6 align="center">WIP</h6>
-  <p align="center">
-    Full Stack Development Project
-    <br />
-    <a href="https://linkr-fullstack.vercel.app/"><strong>Preview the App»</strong></a>
-    -
-    <a href="https://github.com/NivaldoFarias/linkr-backend/tree/main/src"><strong>Browse Nodejs code»</strong></a>
-    -
-    <a href="https://github.com/NivaldoFarias/linkr-frontend#readme"><strong>Front end code»</strong></a>
-</div>
+Full Stack Development Project
 
-<div align="center">
-  <h3 align="center">Built With</h3>
+- [**Preview the App»**](https://linkr-fullstack.vercel.app/)
+- [**Browse Nodejs code»**](https://github.com/NivaldoFarias/linkr-backend/tree/main/src)
+- [**Front end code»**](https://github.com/NivaldoFarias/linkr-frontend#readme)
 
-  <img src="https://img.shields.io/badge/Heroku-430098?style=for-the-badge&logo=heroku&logoColor=white" height="30px"/>
-  <img src="https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white" height="30px"/>
-  <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" height="30px"/>  
-  <img src="https://img.shields.io/badge/Express.js-404D59?style=for-the-badge&logo=express.js&logoColor=white" height="30px"/>
-  <img src="https://img.shields.io/badge/JWT-323330?style=for-the-badge&logo=json-web-tokens&logoColor=pink" height="30px"/>
-  
-</div>
+## Built With</h3>
 
-#
-
-<br />
+![heroku](https://img.shields.io/badge/Heroku-430098?style=for-the-badge&logo=heroku&logoColor=white)
+![postgresql](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![nodejs](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![expressjs](https://img.shields.io/badge/Express.js-404D59?style=for-the-badge&logo=express.js&logoColor=white)
+![jsonwebtoken](https://img.shields.io/badge/JWT-323330?style=for-the-badge&logo=json-web-tokens&logoColor=pink)
 
 [![Linkr Banner][banner]][github-profile]
 
@@ -68,27 +49,15 @@ To summarize, there are a few key components that made building this project a c
   - [x] Aswell as interactive, the hashtags are constantly updated, taking into account both the number of posts and the number of likes on each of them.
   - [x] Each hashtag has a unique page containing all posts with that hashtag.
 
-#
-
 <!-- Study Playlist & Contact -->
 
-### Study Playlist & Contact
+## Study Playlist & Contact
 
 In this section I included all Youtube content I used or refered to while studying for this project, aswell as my main contact mediums. Keep in mind that most of these videos contain information that was not previously studied during class, which may affect some parts of the code that contain these _extras_.
 
 [![Youtube shield][youtube-shield]][youtube-url]
 [![Linkedin shield][linkedin-shield]][linkedin-url]
 [![Slack shield][slack-shield]][slack-url]
-
-#
-
-### Contributors
-
-[![Contributors][contrib-rocks]][contrib-graph]
-
-###### Made with [contrib.rocks](https://contrib.rocks)
-
-#
 
 <!-- MARKDOWN LINKS & IMAGES -->
 
