@@ -6,7 +6,7 @@ Full Stack Development Project
 - [**Browse Nodejs code»**](https://github.com/NivaldoFarias/linkr-backend/tree/main/src)
 - [**Front end code»**](https://github.com/NivaldoFarias/linkr-frontend#readme)
 
-## Built With</h3>
+## Built With
 
 ![heroku](https://img.shields.io/badge/Heroku-430098?style=for-the-badge&logo=heroku&logoColor=white)
 ![postgresql](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
